@@ -7,3 +7,173 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Account {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  googleId      String?     @unique
+  name          String?
+  image         String?
+  role          Role        @default(USER)
+  subscription  Subscription?
+  projects      Project[]
+  pomodoroSessions  PomodoroSession[]
+  settings              UserSettings?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  @@map("accounts")
+}
+
+model Subscription {
+  id          String       @id @default(cuid())
+  account     Account      @relation(fields: [accountId], references: [id])
+  accountId   String       @unique
+  plan        Plan         @default(FREE)
+  status      SubscriptionStatus @default(ACTIVE)
+   // Billing cycle
+  startedAt             DateTime            @default(now())
+  currentPeriodEnd      DateTime?
+  cancelAtPeriodEnd     Boolean             @default(false)
+  canceledAt            DateTime?
+  endedAt               DateTime?
+  
+  // Stripe details
+  stripeSubscriptionId  String?             @unique
+  stripePriceId         String?
+  
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  
+  @@map("subscriptions")
+}
+
+model Project {
+  id            String       @id @default(cuid())
+  name          String
+  owner         Account      @relation(fields: [ownerId], references: [id])
+  ownerId       String
+  columns       Column[]
+   pomodoroSessions  PomodoroSession[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  isLocked      Boolean      @default(false) // for former Pro users
+
+  @@index([ownerId])
+  @@index([ownerId, createdAt])  // To find oldest 3 projects for locking logic
+  @@map("projects")
+}
+
+model Column {
+  id          String    @id @default(cuid())
+  name        String
+  order       Int
+  project     Project   @relation(fields: [projectId], references: [id])
+  projectId   String
+  tasks       Task[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([projectId])
+  @@index([projectId, order])
+  @@map("columns")
+}
+
+model Task {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  completed   Boolean     @default(false)
+  order       Int
+  column      Column      @relation(fields: [columnId], references: [id])
+  columnId    String
+  pomodoroSessions PomodoroSession[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([columnId])
+  @@index([columnId, order])
+  @@map("tasks")
+}
+
+model PomodoroSession {
+  id          String       @id @default(cuid())
+  account         Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId       String
+
+  project         Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId       String
+
+  task        Task?        @relation(fields: [taskId], references: [id])
+  taskId      String?
+  type        SessionType  @default(WORK)
+  duration    Int          // planned duration in minutes
+  elapsed     Int          @default(0)   // total elapsed minutes before last pause
+  state       SessionState @default(PENDING)
+  firstStartedAt DateTime?  // when session first started
+  startedAt   DateTime?    // updated on each resume
+  pausedAt    DateTime?
+  endedAt     DateTime?
+  completed   Boolean      @default(false)
+
+  @@index([accountId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([accountId, completed, endedAt])  // For weekly reports
+  @@index([projectId, completed, endedAt])  // For per-project stats
+  @@map("pomodoro_sessions")
+}
+
+model UserSettings {
+  id     String @id @default(cuid())
+  account             Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId           String   @unique
+  
+  // Pomodoro timer settings (in minutes)
+  pomodoroDuration  Int @default(25)
+  shortBreakDuration Int @default(5)
+  longBreakDuration  Int @default(15)
+  
+  // Sound notification settings
+  soundEnabled      Boolean @default(true)
+  soundVolume       Int     @default(50) // 0-100
+  
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("user_settings")
+}
+
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Plan {
+  FREE
+  PRO_MONTHLY
+  PRO_YEARLY
+  LIFETIME
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  EXPIRED
+  TRIAL
+}
+
+enum SessionType {
+  WORK
+  SHORT_BREAK
+  LONG_BREAK
+}
+
+enum SessionState {
+  PENDING    // not started yet
+  RUNNING
+  PAUSED
+  FINISHED
+}
+

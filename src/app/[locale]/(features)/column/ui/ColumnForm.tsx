@@ -22,7 +22,6 @@ import { Spinner } from "@/components/ui/spinner";
 
 function ColumnForm() {
   const formRef = useRef<ComponentRef<"form">>(null);
-  const inputRef = useRef<ComponentRef<"input">>(null);
   const params = useParams();
   const [isPending, startTransition] = useTransition();
 

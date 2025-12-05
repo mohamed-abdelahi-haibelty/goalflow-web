@@ -8,26 +8,79 @@ datasource db {
   provider = "postgresql"
 }
 
-model Account {
-  id            String      @id @default(cuid())
-  email         String      @unique
-  googleId      String?     @unique
-  name          String?
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
   image         String?
-  role          Role        @default(USER)
-  subscription  Subscription?
-  projects      Project[]
+  role          Role        @default(USER) 
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  subscription      Subscription?
+  projects          Project[]
   pomodoroSessions  PomodoroSession[]
-  settings              UserSettings?
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  @@map("accounts")
+  settings          UserSettings?
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
 }
 
 model Subscription {
   id          String       @id @default(cuid())
-  account     Account      @relation(fields: [accountId], references: [id])
-  accountId   String       @unique
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String       @unique
   plan        Plan         @default(FREE)
   status      SubscriptionStatus @default(ACTIVE)
    // Billing cycle
@@ -50,10 +103,10 @@ model Subscription {
 model Project {
   id            String       @id @default(cuid())
   name          String
-  owner         Account      @relation(fields: [ownerId], references: [id])
+  owner         User     @relation(fields: [ownerId], references: [id])
   ownerId       String
   columns       Column[]
-   pomodoroSessions  PomodoroSession[]
+  pomodoroSessions  PomodoroSession[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   isLocked      Boolean      @default(false) // for former Pro users
@@ -97,8 +150,8 @@ model Task {
 
 model PomodoroSession {
   id          String       @id @default(cuid())
-  account         Account       @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId       String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
 
   project         Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId       String
@@ -115,18 +168,18 @@ model PomodoroSession {
   endedAt     DateTime?
   completed   Boolean      @default(false)
 
-  @@index([accountId])
+  @@index([userId])
   @@index([projectId])
   @@index([taskId])
-  @@index([accountId, completed, endedAt])  // For weekly reports
+  @@index([userId, completed, endedAt])  // For weekly reports
   @@index([projectId, completed, endedAt])  // For per-project stats
   @@map("pomodoro_sessions")
 }
 
 model UserSettings {
   id     String @id @default(cuid())
-  account             Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  accountId           String   @unique
+  user             User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String   @unique
   
   // Pomodoro timer settings (in minutes)
   pomodoroDuration  Int @default(25)
@@ -176,4 +229,5 @@ enum SessionState {
   PAUSED
   FINISHED
 }
+
 

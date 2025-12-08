@@ -16,16 +16,18 @@ import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateColumn } from "../action/updateColumn";
+import ColumnOptions from "./ColumnOptions";
 
 type Props = {
   data: Column;
+  onAddTask: () => void;
 };
 
-function ColumnHeader({ data }: Props) {
+function ColumnHeader({ data, onAddTask }: Props) {
   const [title, setTitle] = useState(data.name);
   const formRef = useRef<ComponentRef<"form">>(null);
   const params = useParams();
-  const [isPending, startTransition] = useTransition();
+  const [_, startTransition] = useTransition();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -139,6 +141,7 @@ function ColumnHeader({ data }: Props) {
           {title}
         </div>
       )}
+      <ColumnOptions column={data} onAddTask={onAddTask} />
     </div>
   );
 }

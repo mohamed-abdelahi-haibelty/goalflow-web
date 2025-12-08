@@ -3,21 +3,21 @@
 import db from "@/lib/db";
 
 import { ActionsResponse } from "@/types";
-import { Column, Project } from "@/generated/prisma/client";
+import { Task } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { getUserSession } from "@/actions/auth/getUserSession";
-import { CreateColumnInput, createColumnSchema } from "../types/types";
+import { CreateTaskInput, createTaskSchema } from "../types/types";
 
-export async function createColumn(
-  data: CreateColumnInput
-): Promise<ActionsResponse<Column>> {
+export async function createTask(
+  data: CreateTaskInput
+): Promise<ActionsResponse<Task>> {
   const session = await getUserSession();
 
   if (!session) {
     return { message: "Unauthorized", success: false, code: 401, data: null };
   }
 
-  const parsed = createColumnSchema.safeParse(data);
+  const parsed = createTaskSchema.safeParse(data);
 
   if (!parsed.success) {
     return {
@@ -29,7 +29,7 @@ export async function createColumn(
     };
   }
 
-  const { name, projectId } = parsed.data;
+  const { title, columnId, projectId } = parsed.data;
 
   try {
     const project = await db.project.findUnique({
@@ -45,20 +45,33 @@ export async function createColumn(
       };
     }
 
-    const lastColumn = await db.column.findFirst({
-      where: { projectId },
+    const column = await db.column.findUnique({
+      where: { id: columnId, projectId: projectId },
+    });
+
+    if (!column) {
+      return {
+        success: false,
+        message: "Column Not Found",
+        data: null,
+        code: 404,
+      };
+    }
+
+    const lastTask = await db.task.findFirst({
+      where: { columnId },
       orderBy: {
         order: "desc",
       },
       select: { order: true },
     });
 
-    const newOrder = lastColumn ? lastColumn.order + 1 : 1;
+    const newOrder = lastTask ? lastTask.order + 1 : 1;
 
-    const column = await db.column.create({
+    const task = await db.task.create({
       data: {
-        name: name,
-        projectId: projectId,
+        title,
+        columnId,
         order: newOrder,
       },
     });
@@ -66,9 +79,9 @@ export async function createColumn(
     revalidatePath(`/project/${projectId}`);
     return {
       success: true,
-      message: "Column Created successfully!",
+      message: "Task Created successfully!",
       code: 201,
-      data: column,
+      data: task,
     };
   } catch (err) {
     return {

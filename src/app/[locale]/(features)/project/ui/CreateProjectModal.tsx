@@ -23,7 +23,6 @@ import { useTransition } from "react";
 import { createProject } from "../action/createProject";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "@/i18n/navigation";
 
 interface CreateProjectModalProps {

@@ -63,7 +63,12 @@ function ColumnItem({ data, index }: Props) {
                   )}
                 >
                   {data.tasks.map((task, index) => (
-                    <TaskItem index={index} key={task.id} data={task} />
+                    <TaskItem
+                      index={index}
+                      key={task.id}
+                      data={task}
+                      projectId={data.projectId}
+                    />
                   ))}
                   {provided.placeholder}
                 </ol>

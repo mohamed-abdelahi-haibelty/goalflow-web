@@ -24,3 +24,18 @@ export const updateTaskOrderSchema = z.object({
 });
 
 export type UpdateTaskOrderInput = z.infer<typeof updateTaskOrderSchema>;
+
+export const deleteTaskSchema = z.object({
+  id: z.string(),
+  projectId: z.string(),
+});
+
+export type DeleteTaskInput = z.infer<typeof deleteTaskSchema>;
+
+export const renameTaskSchema = z.object({
+  id: z.string(),
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  projectId: z.string(),
+});
+
+export type RenameTaskInput = z.infer<typeof renameTaskSchema>;

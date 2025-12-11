@@ -55,7 +55,7 @@ export default async function RootLayout({
   setRequestLocale(locale);
   return (
     <html lang={locale}>
-      <body className={`${mabry.variable} antialiased `}>
+      <body className={`${mabry.variable} antialiased`}>
         <NextIntlClientProvider>
           <Toaster position="top-right" />
           {children}

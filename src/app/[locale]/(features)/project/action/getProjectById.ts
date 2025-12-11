@@ -1,3 +1,4 @@
+//src/app/[locale]/(features)/project/action/getProjectById.ts
 "use server";
 
 import db from "@/lib/db";

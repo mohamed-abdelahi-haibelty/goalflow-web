@@ -23,7 +23,7 @@ model User {
   subscription      Subscription?
   projects          Project[]
   pomodoroSessions  PomodoroSession[]
-  settings          UserSettings?
+  settings          TimerSettings?
 
   @@unique([email])
   @@map("user")
@@ -139,13 +139,49 @@ model Task {
   order       Int
   column      Column      @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId    String
-  pomodoroSessions PomodoroSession[]
+
+  pomodoroSessions PomodoroSession[] // The history of completed work
+  activeTimer      ActiveTimer?      // The current state of the timer for this task
+
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
   @@index([columnId])
   @@index([columnId, order])
   @@map("tasks")
+}
+
+model TimerSettings {
+  id             String @id @default(uuid())
+  user             User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String   @unique
+  
+  workDuration   Int    @default(1500) // 25 mins
+  shortBreakDur  Int    @default(300)  // 5 mins
+  longBreakDur   Int    @default(900)  // 15 mins
+  roundsBeforeLongBreak Int @default(4)
+  soundVolume       Int     @default(50) // 0-100
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("timer_settings")
+}
+
+
+model ActiveTimer {
+  id             String    @id @default(uuid())
+  taskId         String    @unique //One active timer per task
+  task           Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  mode           Mode      @default(POMODORO) // POMODORO, SHORT_BREAK, LONG_BREAK
+  status         TimerStatus   @default(IDLE) // IDLE, RUNNING, PAUSED
+  startTime      DateTime? // When the current run started
+  pausedWhen     Int?    // Seconds remaining when paused
+  
+
+  currentDuration Int      @default(1500) 
+  sessionsCount   Int      @default(0) // Rounds completed for this specific task
 }
 
 model PomodoroSession {
@@ -158,44 +194,18 @@ model PomodoroSession {
 
   task        Task?        @relation(fields: [taskId], references: [id])
   taskId      String?
-  type        SessionType  @default(WORK)
-  duration    Int          // planned duration in minutes
-  elapsed     Int          @default(0)   // total elapsed minutes before last pause
-  state       SessionState @default(PENDING)
-  firstStartedAt DateTime?  // when session first started
-  startedAt   DateTime?    // updated on each resume
-  pausedAt    DateTime?
-  endedAt     DateTime?
-  completed   Boolean      @default(false)
+
+  duration    Int      // How long was this session in seconds (e.g., 1500)
+  completedAt DateTime @default(now())
+
+  
 
   @@index([userId])
   @@index([projectId])
   @@index([taskId])
-  @@index([userId, completed, endedAt])  // For weekly reports
-  @@index([projectId, completed, endedAt])  // For per-project stats
   @@map("pomodoro_sessions")
 }
 
-model UserSettings {
-  id     String @id @default(cuid())
-  user             User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String   @unique
-  
-  // Pomodoro timer settings (in minutes)
-  pomodoroDuration  Int @default(25)
-  shortBreakDuration Int @default(5)
-  longBreakDuration  Int @default(15)
-  
-  // Sound notification settings
-  soundEnabled      Boolean @default(true)
-  soundVolume       Int     @default(50) // 0-100
-  
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("user_settings")
-}
 
 
 enum Role {
@@ -217,17 +227,16 @@ enum SubscriptionStatus {
   TRIAL
 }
 
-enum SessionType {
-  WORK
+enum Mode {
+  POMODORO
   SHORT_BREAK
   LONG_BREAK
 }
 
-enum SessionState {
-  PENDING    // not started yet
-  RUNNING
-  PAUSED
-  FINISHED
+enum TimerStatus {
+ IDLE
+ RUNNING
+ PAUSED
 }
 
 

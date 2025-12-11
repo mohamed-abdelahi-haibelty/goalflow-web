@@ -1,3 +1,4 @@
+//root page
 import { getUserSession } from "@/actions/auth/getUserSession";
 
 import { redirect } from "next/navigation";
@@ -11,8 +12,6 @@ async function Home() {
   }
 
   const { data } = await getProjects();
-
-  console.log("data", data);
 
   if (data?.length) {
     const project = data[0];

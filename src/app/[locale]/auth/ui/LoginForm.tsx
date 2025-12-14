@@ -27,7 +27,7 @@ export default function LoginForm() {
         },
         onError: (error) => {
           console.log(error.error.message);
-          toast.error(error.error.message);
+          toast.error("Sign in failed. Something went wrong.");
           setLoading(false);
         },
       },

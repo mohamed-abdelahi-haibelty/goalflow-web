@@ -15,7 +15,10 @@ export async function getGlobalSettings(): Promise<
   if (!session) {
     return { message: "Unauthorized", success: false, code: 401, data: null };
   }
-  let settings = await db.timerSettings.findFirst();
+
+  let settings = await db.timerSettings.findUnique({
+    where: { userId: session.user.id },
+  });
 
   if (!settings) {
     settings = await db.timerSettings.create({
@@ -26,7 +29,7 @@ export async function getGlobalSettings(): Promise<
 
     return {
       success: true,
-      message: "Ok",
+      message: "Settings created",
       data: settings,
       code: 201,
     };
@@ -45,6 +48,7 @@ export async function updateGlobalSettings(newSettings: {
   short: number;
   long: number;
   rounds: number;
+  volume: number;
 }) {
   const { data: settings, success } = await getGlobalSettings();
 
@@ -52,18 +56,38 @@ export async function updateGlobalSettings(newSettings: {
     throw new Error("Unauthorized");
   }
 
-  await db.timerSettings.update({
-    where: { id: settings?.id },
-    data: {
-      workDuration: newSettings.work,
-      shortBreakDur: newSettings.short,
-      longBreakDur: newSettings.long,
-      roundsBeforeLongBreak: newSettings.rounds,
-    },
-  });
+  const session = await getUserSession();
 
-  // Optional: We could force-update all IDLE timers here,
-  // but our getTaskTimer logic handles this lazily (on load), which is more efficient.
+  if (!session) {
+    return { message: "Unauthorized", success: false, code: 401, data: null };
+  }
 
-  revalidatePath("/");
+  try {
+    const updatedSettings = await db.timerSettings.update({
+      where: { id: settings?.id, userId: session.user.id },
+      data: {
+        workDuration: newSettings.work,
+        shortBreakDur: newSettings.short,
+        longBreakDur: newSettings.long,
+        roundsBeforeLongBreak: newSettings.rounds,
+        soundVolume: newSettings.volume,
+      },
+    });
+
+    revalidatePath("/");
+
+    return {
+      success: true,
+      message: "Settings updated successfully",
+      data: updatedSettings,
+      code: 200,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Failed to update settings",
+      data: null,
+      code: 500,
+    };
+  }
 }

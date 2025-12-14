@@ -45,8 +45,8 @@ function TimerCircle({
   const circumference = 2 * Math.PI * radius;
 
   const totalDuration = getModeDuration({ timer, settings });
-  console.log("total", totalDuration);
   const progress = timeLeft / totalDuration;
+
   const strokeDashoffset = circumference * progress;
 
   const timerControlText =

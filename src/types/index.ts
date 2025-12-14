@@ -10,7 +10,7 @@ export type ErrorType =
 export type ActionsResponse<T = undefined> = {
   success: boolean;
   message: string;
-  code: number;
+  code?: number;
   data?: T | null;
   error?: Record<string, string[]> | null;
   errorType?: ErrorType;

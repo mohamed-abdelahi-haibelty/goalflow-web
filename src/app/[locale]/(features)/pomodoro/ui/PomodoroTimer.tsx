@@ -18,9 +18,13 @@ import {
   Mode,
   Task,
   TimerSettings,
-  TimerStatus,
 } from "@/generated/prisma/browser";
 import { formatTime } from "@/lib/utils";
+import PomodoroSettingsModal from "./PomodoroSettingsModal";
+import useSound from "use-sound";
+import { toast } from "sonner";
+import { usePomodoro } from "../hooks/usePomodoro";
+import { ActionsResponse } from "@/types";
 
 type Props = {
   initialTimer: ActiveTimer;
@@ -29,161 +33,160 @@ type Props = {
   projectId: string;
 };
 
+// Helper to handle the "Optimistic UI with Rollback" pattern
+async function executeOptimisticAction(
+  actionFn: () => Promise<ActionsResponse>,
+  rollbackFn: () => void,
+  errorMessage: string = "Operation failed"
+) {
+  const result = await actionFn();
+  if (!result.success) {
+    // If server failed, undo the local change immediately
+    rollbackFn();
+    toast.error(errorMessage, { description: result.message });
+  }
+}
+
 function PomodoroTimer({
   initialTimer,
   task,
   projectId,
   initialSettings,
 }: Props) {
-  const [data, setData] = useState(initialTimer);
-  const [globalSettings, setGlobalSettings] = useState(initialSettings);
-
-  // Calculate initial time left based on timer status
-  const getInitialTimeLeft = () => {
-    if (initialTimer.status === TimerStatus.IDLE) {
-      return getModeDuration({
-        timer: initialTimer,
-        settings: initialSettings,
-      });
-    }
-    if (initialTimer.status === TimerStatus.PAUSED) {
-      return initialTimer.pausedWhen || 0;
-    }
-    if (
-      initialTimer.status === TimerStatus.RUNNING &&
-      initialTimer.startTime &&
-      initialTimer.pausedWhen
-    ) {
-      const now = new Date().getTime();
-      const start = new Date(initialTimer.startTime).getTime();
-      const elapsed = Math.floor((now - start) / 1000);
-      return Math.max(0, initialTimer.pausedWhen - elapsed);
-    }
-    return getModeDuration({ timer: initialTimer, settings: initialSettings });
-  };
-
-  const [timeLeft, setTimeLeft] = useState(getInitialTimeLeft);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isInitialMount, setIsInitialMount] = useState(true);
-  const [volume, setVolume] = useState(0.5);
   const router = useRouter();
 
-  const processingCompletion = useRef(false);
+  // Sound Setup
+  const volume = initialSettings.soundVolume / 100;
+  const [playButtonSound] = useSound("/sound/button-sound.mp3", { volume });
+  const [playNotification] = useSound("/sound/alarm-sound.mp3", { volume });
 
+  // --- Logic Extracted to Hook ---
+  const {
+    timeLeft,
+    timerState,
+    start,
+    pause,
+    reset,
+    switchLocalMode,
+    syncFromServer,
+    completeAndSwitch,
+  } = usePomodoro(initialTimer, initialSettings, handleTimerComplete);
+
+  // --- Effects ---
+
+  // Update document title
   useEffect(() => {
-    setData(initialTimer);
+    document.title = `${formatTime(timeLeft)} - ${timerState.mode}`;
+  }, [timeLeft, timerState.mode]);
+
+  // Sync from server ONLY if status changed externally (e.g. another tab)
+  // This prevents the "Prop Mirroring" loop bug.
+  useEffect(() => {
+    // Only sync if the server status is fundamentally different or we just loaded
+    if (initialTimer.updatedAt !== timerState.updatedAt) {
+      syncFromServer(initialTimer);
+    }
   }, [initialTimer]);
 
-  // Disable transition on initial mount
   useEffect(() => {
     setIsInitialMount(false);
   }, []);
 
-  useEffect(() => {
-    setGlobalSettings(initialSettings);
-  }, [initialSettings]);
+  // --- Handlers ---
 
-  // 1. Ticking Logic
-  useEffect(() => {
-    const tick = () => {
-      if (data.status === TimerStatus.IDLE) {
-        const full = getModeDuration({ timer: data, settings: globalSettings });
-        setTimeLeft((prev) => (prev === full ? prev : full));
-        return;
-      }
+  async function handleTimerComplete() {
+    playNotification();
+    toast.success("Session Completed!", {
+      description: `You've completed a ${timerState.mode
+        .toLowerCase()
+        .replace("_", " ")} session.`,
+    });
 
-      if (data.status === TimerStatus.PAUSED) {
-        const pausedTime = data.pausedWhen || 0;
-        setTimeLeft((prev) => (prev === pausedTime ? prev : pausedTime));
-        return;
-      }
+    // We replicate the server logic here to switch modes instantly
+    const currentMode = timerState.mode;
+    const currentCount = timerState.sessionsCount;
 
-      if (
-        data.status === TimerStatus.RUNNING &&
-        data.startTime &&
-        data.pausedWhen
-      ) {
-        const now = new Date().getTime();
-        const start = new Date(data.startTime).getTime();
-        const targetDuration = data.pausedWhen;
+    // Calculate what the new count WILL be
+    const nextCount =
+      currentMode === Mode.POMODORO ? currentCount + 1 : currentCount;
 
-        const elapsedSeconds = Math.floor((now - start) / 1000);
-        const remaining = targetDuration - elapsedSeconds;
+    let nextMode: Mode = Mode.POMODORO;
 
-        if (remaining <= 0) {
-          setTimeLeft(0);
-          handleCompletion();
-        } else {
-          setTimeLeft(remaining);
-        }
-      }
-    };
-
-    tick();
-    // Optimization: Only start the interval if we are actually RUNNING
-    // This prevents unnecessary processing when IDLE or PAUSED
-    if (data.status === TimerStatus.RUNNING) {
-      const interval = setInterval(tick, 200);
-      return () => clearInterval(interval);
+    if (currentMode === Mode.POMODORO) {
+      // Use settings for rounds (defaulting to 4 if setting missing)
+      const rounds = initialSettings.roundsBeforeLongBreak || 4;
+      nextMode = nextCount % rounds === 0 ? Mode.LONG_BREAK : Mode.SHORT_BREAK;
     }
-  }, [data]);
+    // If we were in a break, we go back to Pomodoro (default)
 
-  useEffect(() => {
-    document.title = `${formatTime(timeLeft)} - ${data.mode}`;
-  }, [timeLeft, data.mode]);
+    // Fire and forget server action (Optimistic UI is already handled by hook resetting to IDLE)
+    const previousState = { ...timerState };
 
-  const handleCompletion = async () => {
-    if (processingCompletion.current) return;
-    processingCompletion.current = true;
-    // Todo : play sound
-    // Pass taskId to the action
-    await completeTaskSession(task.id, projectId);
+    // EXECUTE INSTANT UI UPDATE
+    completeAndSwitch(nextMode);
+
+    await executeOptimisticAction(
+      () => completeTaskSession(task.id, projectId),
+      () => syncFromServer(previousState),
+      "Failed to mark session as completed"
+    );
     router.refresh();
-  };
+  }
 
   const handleStart = async () => {
-    // Calculate the duration that should be used
-    const targetDuration =
-      data.status === TimerStatus.PAUSED && data.pausedWhen
-        ? data.pausedWhen
-        : getModeDuration({ timer: data, settings: globalSettings });
-    const now = new Date();
-    //OPTIMISTIC UPDATE: Update local state immediately
-    setData((prev) => ({
-      ...prev,
-      status: "RUNNING",
-      startTime: now,
-      pausedWhen: targetDuration,
-    }));
-    startTaskTimer(task.id, projectId);
+    playButtonSound();
+    // 1. Snapshot previous state for rollback
+    const previousState = { ...timerState };
+
+    // 2. Optimistic Update (UI updates instantly)
+    start();
+
+    // 3. Perform Server Action with Rollback protection
+    await executeOptimisticAction(
+      () => startTaskTimer(task.id, projectId),
+      () => syncFromServer(previousState), // Rollback function
+      "Failed to start timer"
+    );
   };
 
   const handlePause = async () => {
-    //OPTIMISTIC UPDATE: Update local state immediately
-    setData((prev) => ({ ...prev, status: "PAUSED", pausedWhen: timeLeft }));
-    pauseTimer(timeLeft, task.id, projectId);
+    playButtonSound();
+    const previousState = { ...timerState };
+
+    pause();
+
+    await executeOptimisticAction(
+      () => pauseTimer(timeLeft, task.id, projectId),
+      () => syncFromServer(previousState),
+      "Failed to pause timer"
+    );
   };
 
   const handleReset = async () => {
-    setData((prev) => ({
-      ...prev,
-      status: "IDLE",
-      pausedWhen: null,
-      startTime: null,
-    }));
-    resetTimer(task.id, projectId);
+    const previousState = { ...timerState };
+
+    reset();
+
+    await executeOptimisticAction(
+      () => resetTimer(task.id, projectId),
+      () => syncFromServer(previousState),
+      "Failed to reset"
+    );
   };
 
-  async function handleSwitchMode(m: Mode) {
-    setTimeLeft(0);
-    setData((prev) => ({
-      ...prev,
-      status: "IDLE",
-      mode: m,
-      pausedWhen: null,
-      startTime: null,
-    }));
-    switchMode(m, task.id, projectId);
-  }
+  const handleSwitchMode = async (m: Mode) => {
+    const previousState = { ...timerState };
+
+    switchLocalMode(m);
+
+    await executeOptimisticAction(
+      () => switchMode(m, task.id, projectId),
+      () => syncFromServer(previousState),
+      "Failed to switch mode"
+    );
+  };
 
   return (
     <div className="flex flex-col items-center justify-center  text-foreground">
@@ -202,11 +205,11 @@ function PomodoroTimer({
         </h2>
       </div>
 
-      <TimerModeSwitcher mode={data.mode} switchMode={handleSwitchMode} />
+      <TimerModeSwitcher mode={timerState.mode} switchMode={handleSwitchMode} />
       <TimerCircle
         timeLeft={timeLeft}
-        timer={data}
-        settings={globalSettings}
+        timer={timerState}
+        settings={initialSettings}
         startTimer={handleStart}
         pauseTimer={handlePause}
         disableTransition={isInitialMount}
@@ -224,14 +227,26 @@ function PomodoroTimer({
         </Button>
 
         {/* Settings Button */}
-        <Button variant="ghost" size="icon" className="rounded-full">
+        <Button
+          onClick={() => setIsSettingsOpen(true)}
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+        >
           <Settings className="h-5 w-5 text-muted-foreground hover:text-foreground" />
         </Button>
       </div>
 
       <div className="mt-4 text-sm text-muted-foreground">
-        Completed sessions: {data.sessionsCount}
+        Completed sessions: {timerState.sessionsCount}
       </div>
+
+      {/* Settings Modal */}
+      <PomodoroSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        currentSettings={initialSettings}
+      />
     </div>
   );
 }

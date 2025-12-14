@@ -1,5 +1,3 @@
-//src/app/[locale]/(features)/project/action/createProjects.ts
-
 "use server";
 
 import db from "@/lib/db";
@@ -7,11 +5,11 @@ import { CreateProjectInput, createProjectSchema } from "../types/project";
 
 import { ActionsResponse } from "@/types";
 import { Project } from "@/generated/prisma/client";
-import { revalidatePath } from "next/cache";
 import { getUserSession } from "@/actions/auth/getUserSession";
 
 export async function createProject(
-  data: CreateProjectInput
+  data: CreateProjectInput,
+  shouldRevalidate: boolean = true
 ): Promise<ActionsResponse<Project>> {
   const session = await getUserSession();
 
@@ -30,6 +28,8 @@ export async function createProject(
       code: 400,
     };
   }
+
+  console.log("the parsed data", parsed);
 
   try {
     const result = await db.$transaction(async (tx) => {
@@ -57,7 +57,13 @@ export async function createProject(
       return project;
     });
 
-    revalidatePath(`/project/${result.id}`);
+    // Only revalidate when called from client components or form actions
+    // Skip revalidation when called during server component render
+    if (shouldRevalidate) {
+      const { revalidatePath } = await import("next/cache");
+      revalidatePath(`/project/${result.id}`);
+    }
+
     return {
       success: true,
       message: "Project Created successfully!",
@@ -65,6 +71,7 @@ export async function createProject(
       data: result,
     };
   } catch (err) {
+    console.log("database error", err);
     return {
       success: false,
       message: "Something went wrong!",

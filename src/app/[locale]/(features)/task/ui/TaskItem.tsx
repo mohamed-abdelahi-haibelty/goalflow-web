@@ -13,20 +13,23 @@ function TaskItem({ data, index, projectId }: Props) {
   return (
     <Draggable draggableId={data.id} index={index}>
       {(provided) => (
-        <Link href={`/project/${projectId}/task/${data.id}`}>
-          <div
-            {...provided.dragHandleProps}
-            {...provided.draggableProps}
-            ref={provided.innerRef}
-            role="button"
-            className="cursor-pointer flex items-center gap-x-1 justify-between border border-transparent hover:border-black py-2 px-3 text-sm bg-background rounded-md"
+        <div
+          {...provided.dragHandleProps}
+          {...provided.draggableProps}
+          ref={provided.innerRef}
+          role="button"
+          className="cursor-pointer flex items-center gap-x-1 justify-between border border-transparent hover:border-black py-2 px-3 text-sm bg-background rounded-md"
+        >
+          <Link
+            href={`/project/${projectId}/task/${data.id}`}
+            className="truncate"
           >
-            <span className="truncate ">{data.title}</span>
-            <span className="">
-              <TaskOptions task={data} projectId={projectId} />
-            </span>
-          </div>
-        </Link>
+            <span>{data.title}</span>
+          </Link>
+          <span>
+            <TaskOptions task={data} projectId={projectId} />
+          </span>
+        </div>
       )}
     </Draggable>
   );

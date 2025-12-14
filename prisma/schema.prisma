@@ -20,7 +20,6 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  subscription      Subscription?
   projects          Project[]
   pomodoroSessions  PomodoroSession[]
   settings          TimerSettings?
@@ -75,29 +74,6 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
-}
-
-model Subscription {
-  id          String       @id @default(cuid())
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String       @unique
-  plan        Plan         @default(FREE)
-  status      SubscriptionStatus @default(ACTIVE)
-   // Billing cycle
-  startedAt             DateTime            @default(now())
-  currentPeriodEnd      DateTime?
-  cancelAtPeriodEnd     Boolean             @default(false)
-  canceledAt            DateTime?
-  endedAt               DateTime?
-  
-  // Stripe details
-  stripeSubscriptionId  String?             @unique
-  stripePriceId         String?
-  
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
-  
-  @@map("subscriptions")
 }
 
 model Project {
@@ -168,7 +144,6 @@ model TimerSettings {
   @@map("timer_settings")
 }
 
-
 model ActiveTimer {
   id             String    @id @default(uuid())
   taskId         String    @unique //One active timer per task
@@ -209,8 +184,6 @@ model PomodoroSession {
   @@map("pomodoro_sessions")
 }
 
-
-
 enum Role {
   USER
   ADMIN
@@ -221,13 +194,6 @@ enum Plan {
   PRO_MONTHLY
   PRO_YEARLY
   LIFETIME
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  CANCELED
-  EXPIRED
-  TRIAL
 }
 
 enum Mode {

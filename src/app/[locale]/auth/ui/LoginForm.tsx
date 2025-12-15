@@ -35,7 +35,7 @@ export default function LoginForm() {
   }
 
   return (
-    <Card className="bg-white shadow-xl p-8 mb-6 rounded-3xl">
+    <Card className="bg-card shadow-xl p-8 mb-6 rounded-3xl">
       <div className="space-y-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground mb-2">
@@ -52,7 +52,7 @@ export default function LoginForm() {
             <Button
               variant="outline"
               size="lg"
-              className="flex-1 h-12 rounded-xl border transition-all bg-transparent"
+              className="flex-1 h-12 rounded-xl border transition-all bg-transparent dark:bg-background"
               onClick={() => signInWithSocial("google")}
               disabled={googleLoading}
             >
@@ -92,7 +92,7 @@ export default function LoginForm() {
             <Button
               variant="outline"
               size="lg"
-              className="flex-1 h-12 rounded-xl transition-all bg-transparent"
+              className="flex-1 h-12 rounded-xl transition-all bg-transparent dark:bg-background"
               onClick={() => signInWithSocial("github")}
               disabled={githubLoading}
             >

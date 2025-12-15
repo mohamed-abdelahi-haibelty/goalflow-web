@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getProjectById } from "../action/getProjectById";
 import { ProjectActionsMenu } from "../ui/ProjectActionsMenu";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export async function ProjectHeader({ projectId }: { projectId: string }) {
   const { data: project } = await getProjectById(projectId);
@@ -33,7 +34,8 @@ export async function ProjectHeader({ projectId }: { projectId: string }) {
         </Breadcrumb>
       </div>
 
-      <div className="ml-auto px-4">
+      <div className="ml-auto px-4 flex items-center gap-x-0.5">
+        <ModeToggle />
         {project && (
           <ProjectActionsMenu
             projectId={project.id}

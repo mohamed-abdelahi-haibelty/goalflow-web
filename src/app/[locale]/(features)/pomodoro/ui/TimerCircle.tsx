@@ -67,7 +67,7 @@ function TimerCircle({
 
   return (
     <div className="relative w-80 h-80 flex items-center justify-center mb-8 cursor-pointer">
-      <div className="absolute w-full h-full rounded-full bg-white border border-dashed shadow-lg flex items-center justify-center">
+      <div className="absolute w-full h-full rounded-full bg-card border border-dashed shadow-lg flex items-center justify-center">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 300 300">
           <circle
             cx="150"

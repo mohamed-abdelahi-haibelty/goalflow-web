@@ -67,14 +67,14 @@
   --card-foreground: oklch(0.9236 0.008 73.7406);
   --popover: oklch(0.2393 0 0);
   --popover-foreground: oklch(0.9206 0.008 73.7403);
-  --primary: oklch(0.7732 0.0764 18.9547);
-  --primary-foreground: oklch(0.3505 0.0028 17.2891);
+  --primary: oklch(0.8021 0.0976 19.4308);
+  --primary-foreground: oklch(0.2924 0.0709 264.7708);
   --secondary: oklch(0.9331 0.0103 48.6174);
   --secondary-foreground: oklch(0.3919 0.0089 39.3803);
   --muted: oklch(0.2891 0 0);
   --muted-foreground: oklch(0.7976 0.0101 72.6397);
-  --accent: oklch(0.8193 0.0405 303.3251);
-  --accent-foreground: oklch(0.2178 0 0);
+  --accent: oklch(0.371 0 0);
+  --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
   --border: oklch(0.325 0 0);
@@ -180,4 +180,10 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }

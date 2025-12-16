@@ -1,3 +1,4 @@
+import { getDirection } from "@/lib/utils";
 import { ProjectHeader } from "../ui/ProjectHeader";
 
 export default async function ProjectIdLayout({
@@ -5,13 +6,14 @@ export default async function ProjectIdLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }>) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  const direction = getDirection(locale);
 
   return (
     <>
-      <ProjectHeader projectId={id} />
+      <ProjectHeader projectId={id} direction={direction} />
       <main className="px-4">{children}</main>
     </>
   );

@@ -3,29 +3,36 @@ import LoginForm from "./LoginForm";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ModeToggle } from "@/components/ModeToggle";
 
 export default async function Login() {
+  const t = await getTranslations("loginPage");
+
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (session) {
-    return redirect("/");
+    redirect("/");
   }
 
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-secondary/50 via-background to-accent/10 overflow-hidden">
-      {/* Main content */}
+      <div className="absolute top-5 right-6 px-8 z-50">
+        <LanguageSwitcher />
+        <ModeToggle />
+      </div>
+
       <div className="relative flex items-center justify-center min-h-screen px-4">
         <div className="w-full max-w-md">
-          {/* Header  */}
+          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-1">
-              GoalFlow
+              {t("appName")}
             </h1>
-            <p className="text-sm text-muted-foreground">
-              Kanban + Pomodoro for Peak Productivity
-            </p>
+            <p className="text-sm text-muted-foreground">{t("tagline")}</p>
           </div>
 
           {/* Login card */}
@@ -34,19 +41,19 @@ export default async function Login() {
           {/* Footer */}
           <div className="text-center text-xs text-muted-foreground space-y-2">
             <p>
-              By continuing, you agree to our{" "}
+              {t("footer.prefix")}{" "}
               <Link
                 href="/terms"
                 className="text-primary hover:text-primary/80 transition-colors"
               >
-                Terms of Use
-              </Link>
-              {" and "}
+                {t("footer.terms")}
+              </Link>{" "}
+              {t("footer.and")}{" "}
               <Link
                 href="/privacy"
                 className="text-primary hover:text-primary/80 transition-colors"
               >
-                Privacy Policy
+                {t("footer.privacy")}
               </Link>
             </p>
           </div>

@@ -24,6 +24,7 @@ import { createProject } from "../action/createProject";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ interface CreateProjectModalProps {
 }
 
 function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
+  const t = useTranslations("project.create");
   const [isPending, startTransition] = useTransition();
   const form = useForm<CreateProjectInput>({
     resolver: zodResolver(createProjectSchema),
@@ -45,7 +47,7 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
       const res = await createProject(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.error"));
         return;
       }
 
@@ -56,7 +58,7 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
         router.push(`/project/${res?.data?.id}`);
       } else {
         if (res.message) {
-          toast.error(res.message);
+          toast.error(t("toast.error"));
         }
 
         if (res.error) {
@@ -68,7 +70,7 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
               });
             }
           });
-          toast.error("Please check the form for errors.");
+          toast.error(t("toast.formError"));
         }
       }
     });
@@ -80,7 +82,7 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Project</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -91,7 +93,7 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Create Project" {...field} />
+                    <Input placeholder={t("placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,17 +102,17 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
 
             <DialogFooter className="mt-3">
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline">{t("cancel")}</Button>
               </DialogClose>
 
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <div className="flex items-center gap-1">
-                    <span>Creating…</span>
+                    <span>{t("creating")}</span>
                     <Spinner />
                   </div>
                 ) : (
-                  "Create"
+                  t("create")
                 )}
               </Button>
             </DialogFooter>

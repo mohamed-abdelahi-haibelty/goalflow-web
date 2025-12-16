@@ -1,1 +1,168 @@
-{}
+{
+  "loginPage": {
+    "appName": "GoalFlow",
+    "tagline": "Kanban + Pomodoro for Peak Productivity",
+    "footer": {
+      "prefix": "By continuing, you agree to our",
+      "terms": "Terms of Use",
+      "and": "and",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "loginForm": {
+    "title": "Hi there! 👋",
+    "subtitle": "Choose a method to sign in",
+    "loading": "Loading...",
+    "providers": {
+      "google": "Continue with Google",
+      "github": "Continue with GitHub"
+    },
+    "toast": {
+      "successGoogle": "Signed in with Google, you will be redirected...",
+      "successGithub": "Signed in with GitHub, you will be redirected...",
+      "error": "Sign in failed. Something went wrong."
+    }
+  },
+  "columnHeader": {
+    "placeholder": "Rename list...",
+    "toast": {
+      "renameSuccess": "List renamed successfully.",
+      "renameFailed": "Rename failed.",
+      "formError": "Please check the form for errors.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "columnOptions": {
+    "title": "List Actions",
+    "addTask": "Add task…",
+    "deleteColumn": "Delete list",
+    "deleting": "Deleting...",
+    "toast": {
+      "deleteSuccess": "List deleted successfully.",
+      "deleteFailed": "Failed to delete list.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "taskOptions": {
+    "title": "Task Actions",
+    "rename": "Rename",
+    "delete": "Delete Task",
+    "deleting": "Deleting...",
+    "toast": {
+      "deleteSuccess": "Task deleted successfully.",
+      "deleteFailed": "Failed to delete task.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "renameTaskModal": {
+    "title": "Rename Task",
+    "placeholder": "Rename Task",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving…",
+    "toast": {
+      "renameSuccess": "Task renamed successfully.",
+      "formError": "Please check the form for errors.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "taskForm": {
+    "placeholder": "Enter task title...",
+    "addTask": "Add Task",
+    "adding": "Adding…",
+    "toast": {
+      "createFailed": "Failed to create task.",
+      "formError": "Please check the form for errors.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "columnForm": {
+    "placeholder": "Enter list name...",
+    "addColumn": "Add List",
+    "saving": "Saving…",
+    "toast": {
+      "createSuccess": "List created successfully!",
+      "genericError": "Something went wrong. Please try again.",
+      "formError": "Please check the form for errors."
+    }
+  },
+  "projectActions": {
+    "openMenu": "Open menu",
+    "rename": "Rename",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "save": "Save",
+    "placeholder": "Project Name",
+    "confirmTitle": "Are you absolutely sure?",
+    "confirmDescription": "This action cannot be undone. This will permanently delete the project {projectName} and all its tasks.",
+    "deleting": "Deleting...",
+    "toast": {
+      "renameSuccess": "Project renamed successfully.",
+      "renameFailed": "Failed to rename project.",
+      "deleteSuccess": "Project deleted successfully.",
+      "deleteFailed": "Failed to delete project."
+    }
+  },
+  "nav": {
+    "report": {
+      "label": "Analytics",
+      "global": "Global Report"
+    },
+    "projects": {
+      "label": "Projects",
+      "create": "Create Project",
+      "more": "More"
+    }
+  },
+  "project": {
+    "create": {
+      "title": "Add Project",
+      "placeholder": "Project name",
+      "create": "Create",
+      "creating": "Creating…",
+      "cancel": "Cancel",
+      "toast": {
+        "success": "Project created successfully!",
+        "error": "Something went wrong.",
+        "formError": "Please check the form."
+      }
+    }
+  },
+  "timer": {
+    "back": "Back to project board",
+    "completedSessions": "Completed sessions",
+    "sessionCompleted": "Session completed!",
+    "sessionDescription": "You've completed a {{mode}} session.",
+    "controls": {
+      "start": "Start",
+      "pause": "Pause",
+      "reset": "Reset",
+      "settings": "Settings"
+    },
+    "modes": {
+      "pomodoro": "Focus",
+      "shortBreak": "Short Break",
+      "longBreak": "Long Break"
+    }
+  },
+  "pomodoroSettings": {
+    "title": "Timer Settings",
+    "work": "Work duration (minutes)",
+    "short": "Short break (minutes)",
+    "long": "Long break (minutes)",
+    "rounds": "Rounds before long break",
+    "volume": "Sound volume",
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "saving": "Saving…",
+    "success": "Settings updated successfully!",
+    "error": "Failed to update settings. Please try again."
+  },
+  "breadcrumb": {
+    "project": "Project"
+  },
+  "navUser": {
+    "upgrade": "Go Pro",
+    "logout": "Log out"
+  }
+}

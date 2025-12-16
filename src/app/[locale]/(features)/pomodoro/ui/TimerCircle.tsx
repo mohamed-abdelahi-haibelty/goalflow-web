@@ -7,6 +7,7 @@ import {
   TimerStatus,
 } from "@/generated/prisma/browser";
 import { formatTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type Props = {
   timer: ActiveTimer;
@@ -48,11 +49,12 @@ function TimerCircle({
   const progress = timeLeft / totalDuration;
 
   const strokeDashoffset = circumference * progress;
+  const t = useTranslations();
 
-  const timerControlText =
+  const label =
     timer.status === TimerStatus.IDLE || timer.status === TimerStatus.PAUSED
-      ? "START"
-      : "PAUSE";
+      ? t("timer.controls.start")
+      : t("timer.controls.pause");
 
   function handleTimerControle() {
     if (
@@ -102,8 +104,8 @@ function TimerCircle({
           <div className="text-6xl font-bold tracking-wider mb-2">
             {formatTime(timeLeft)}
           </div>
-          <div className="uppercase tracking-[0.5em] text-sm font-medium hover:opacity-80 transition-opacity">
-            {timerControlText}
+          <div className="uppercase  text-sm font-medium hover:opacity-80 transition-opacity">
+            {label}
           </div>
         </div>
       </div>

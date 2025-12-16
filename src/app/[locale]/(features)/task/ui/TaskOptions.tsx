@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { deleteTask } from "../action/deleteTask";
 import RenameTaskModal from "./RenameTaskModal";
+import { useTranslations } from "next-intl";
 
 type Props = {
   task: Task;
@@ -22,6 +23,7 @@ type Props = {
 };
 
 function TaskOptions({ task, projectId }: Props) {
+  const t = useTranslations("taskOptions");
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -31,15 +33,15 @@ function TaskOptions({ task, projectId }: Props) {
       const res = await deleteTask(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
       if (res.success) {
-        toast.success(res.message);
+        toast.success(t("toast.deleteSuccess"));
       } else {
         if (res.message) {
-          toast.error(res.message);
+          toast.error(res.message || t("toast.deleteFailed"));
         }
       }
     });
@@ -59,7 +61,7 @@ function TaskOptions({ task, projectId }: Props) {
           align="start"
         >
           <div className="text-sm font-medium text-center text-neutral-600 pb-4">
-            Task Actions
+            {t("title")}
           </div>
           <PopoverClose asChild>
             <Button
@@ -74,7 +76,7 @@ function TaskOptions({ task, projectId }: Props) {
             className="rounded-none w-full h-auto p-2 px-5 font-normal justify-start text-sm"
             variant={"ghost"}
           >
-            Rename
+            {t("rename")}
           </Button>
 
           <Button
@@ -84,11 +86,11 @@ function TaskOptions({ task, projectId }: Props) {
           >
             {isPending ? (
               <div className="flex gap-1 items-center">
-                <span>Deleting...</span>
+                <span>{t("deleting")}</span>
                 <Spinner className="w-4 h-4" />
               </div>
             ) : (
-              "Delete Task"
+              t("delete")
             )}
           </Button>
         </PopoverContent>

@@ -52,7 +52,7 @@ function TaskItem({ data, index, projectId }: Props) {
               onMouseDown={(e) => e.stopPropagation()}
               onClick={(e) => e.stopPropagation()}
               aria-label={completed ? "Mark as incomplete" : "Mark as complete"}
-              className="opacity-100  mr-2 shrink-0 dark:border-primary/70"
+              className="opacity-100  me-2 shrink-0 dark:border-primary/70"
             />
             <Link
               href={`/project/${projectId}/task/${data.id}`}

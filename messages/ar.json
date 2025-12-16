@@ -1,1 +1,168 @@
-{}
+{
+  "loginPage": {
+    "appName": "GoalFlow",
+    "tagline": "كانبان + بومودورو لتحقيق أعلى إنتاجية",
+    "footer": {
+      "prefix": "بالمتابعة، فإنك توافق على",
+      "terms": "شروط الاستخدام",
+      "and": "و",
+      "privacy": "سياسة الخصوصية"
+    }
+  },
+  "loginForm": {
+    "title": "مرحبًا! 👋",
+    "subtitle": "اختر طريقة تسجيل الدخول",
+    "loading": "جاري التحميل...",
+    "providers": {
+      "google": "المتابعة باستخدام جوجل",
+      "github": "المتابعة باستخدام جيت هاب"
+    },
+    "toast": {
+      "successGoogle": "تم تسجيل الدخول باستخدام جوجل، سيتم تحويلك...",
+      "successGithub": "تم تسجيل الدخول باستخدام جيت هاب، سيتم تحويلك...",
+      "error": "فشل تسجيل الدخول. حدث خطأ ما."
+    }
+  },
+  "columnHeader": {
+    "placeholder": "إعادة تسمية القائمة...",
+    "toast": {
+      "renameSuccess": "تمت إعادة تسمية القائمة بنجاح.",
+      "renameFailed": "فشلت عملية إعادة التسمية.",
+      "formError": "يرجى التحقق من الحقول.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "columnOptions": {
+    "title": "إجراءات القائمة",
+    "addTask": "إضافة مهمة…",
+    "deleteColumn": "حذف القائمة",
+    "deleting": "جاري الحذف...",
+    "toast": {
+      "deleteSuccess": "تم حذف القائمة بنجاح.",
+      "deleteFailed": "فشل حذف القائمة.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "taskOptions": {
+    "title": "إجراءات المهمة",
+    "rename": "إعادة تسمية",
+    "delete": "حذف المهمة",
+    "deleting": "جاري الحذف...",
+    "toast": {
+      "deleteSuccess": "تم حذف المهمة بنجاح.",
+      "deleteFailed": "فشل حذف المهمة.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "renameTaskModal": {
+    "title": "إعادة تسمية المهمة",
+    "placeholder": "إعادة تسمية المهمة",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "saving": "جاري الحفظ…",
+    "toast": {
+      "renameSuccess": "تمت إعادة تسمية المهمة بنجاح.",
+      "formError": "يرجى التحقق من الحقول.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "taskForm": {
+    "placeholder": "أدخل عنوان المهمة...",
+    "addTask": "إضافة مهمة",
+    "adding": "جاري الإضافة…",
+    "toast": {
+      "createFailed": "فشل إنشاء المهمة.",
+      "formError": "يرجى التحقق من الحقول.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "columnForm": {
+    "placeholder": "أدخل اسم القائمة...",
+    "addColumn": "إضافة قائمة",
+    "saving": "جاري الحفظ…",
+    "toast": {
+      "createSuccess": "تم إنشاء القائمة بنجاح!",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+      "formError": "يرجى التحقق من الحقول."
+    }
+  },
+  "projectActions": {
+    "openMenu": "فتح القائمة",
+    "rename": "إعادة تسمية",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "placeholder": "اسم المشروع",
+    "confirmTitle": "هل أنت متأكد من ذلك؟",
+    "confirmDescription": "لا يمكن التراجع عن هذا الإجراء. سيؤدي هذا إلى حذف المشروع {projectName} وجميع مهامه نهائيًا.",
+    "deleting": "جاري الحذف…",
+    "toast": {
+      "renameSuccess": "تمت إعادة تسمية المشروع بنجاح.",
+      "renameFailed": "فشل إعادة تسمية المشروع.",
+      "deleteSuccess": "تم حذف المشروع بنجاح.",
+      "deleteFailed": "فشل حذف المشروع."
+    }
+  },
+  "nav": {
+    "report": {
+      "label": "التحليلات",
+      "global": "التقرير العام"
+    },
+    "projects": {
+      "label": "المشاريع",
+      "create": "إنشاء مشروع",
+      "more": "المزيد"
+    }
+  },
+  "project": {
+    "create": {
+      "title": "إضافة مشروع",
+      "placeholder": "اسم المشروع",
+      "create": "إنشاء",
+      "creating": "جارٍ الإنشاء…",
+      "cancel": "إلغاء",
+      "toast": {
+        "success": "تم إنشاء المشروع بنجاح!",
+        "error": "حدث خطأ ما. حاول مرة أخرى.",
+        "formError": "يرجى التحقق من الحقول."
+      }
+    }
+  },
+  "timer": {
+    "back": "العودة إلى لوحة المشروع",
+    "completedSessions": "الجلسات المكتملة",
+    "sessionCompleted": "تم إكمال الجلسة!",
+    "sessionDescription": "لقد أكملت جلسة {{mode}}.",
+    "controls": {
+      "start": "ابدأ",
+      "pause": "إيقاف مؤقت",
+      "reset": "إعادة ضبط",
+      "settings": "الإعدادات"
+    },
+    "modes": {
+      "pomodoro": "تركيز",
+      "shortBreak": "استراحة قصيرة",
+      "longBreak": "استراحة طويلة"
+    }
+  },
+  "pomodoroSettings": {
+    "title": "إعدادات المؤقت",
+    "work": "مدة العمل (بالدقائق)",
+    "short": "الاستراحة القصيرة (بالدقائق)",
+    "long": "الاستراحة الطويلة (بالدقائق)",
+    "rounds": "عدد الجلسات قبل الاستراحة الطويلة",
+    "volume": "مستوى الصوت",
+    "cancel": "إلغاء",
+    "save": "حفظ التغييرات",
+    "saving": "جارٍ الحفظ…",
+    "success": "تم تحديث الإعدادات بنجاح!",
+    "error": "فشل تحديث الإعدادات. حاول مرة أخرى."
+  },
+  "breadcrumb": {
+    "project": "المشروع"
+  },
+  "navUser": {
+    "upgrade": "الترقية إلى الباقة الاحترافية",
+    "logout": "تسجيل الخروج"
+  }
+}

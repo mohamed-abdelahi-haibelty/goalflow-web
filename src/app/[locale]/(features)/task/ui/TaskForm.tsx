@@ -17,6 +17,7 @@ import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { toast } from "sonner";
 import { createTask } from "../action/createTask";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 type Props = {
   form: ReturnType<typeof useForm<CreateTaskInput>>;
@@ -33,6 +34,7 @@ function TaskForm({
   columnId,
   form
 }: Props) {
+  const t = useTranslations("taskForm");
   const formRef = useRef<ComponentRef<"form">>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -59,7 +61,7 @@ function TaskForm({
       const res = await createTask(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
@@ -70,7 +72,7 @@ function TaskForm({
       } else {
         toast.error(res.message);
         if (res.message) {
-          toast.error(res.message);
+          toast.error(t("toast.createFailed"));
           disableEditing();
         }
 
@@ -83,7 +85,7 @@ function TaskForm({
               });
             }
           });
-          toast.error("Please check the form for errors.");
+          toast.error(t("toast.formError"));
         }
       }
     });
@@ -105,7 +107,7 @@ function TaskForm({
                 <FormControl>
                   <Textarea
                     className="resize-none focus-visible:ring-0 bg-background focus-visible:ring-offset-0 ring-0 focus:ring-0 outline-none shadow-none border-none"
-                    placeholder="Enter task title..."
+                    placeholder={t("placeholder")}
                     {...field}
                     onKeyDown={onTextAreaKeydDown}
                   />
@@ -118,9 +120,9 @@ function TaskForm({
           <div className="flex items-center gap-x-1 mt-2">
             <Button type="submit">
                 {isPending ? <>
-                <span>Adding...</span>
+                <span>{t("adding")}</span>
                 <Spinner className="w-4 h-4"/>
-                </> :  "Add Task"}
+                </> :  t("addTask")}
             </Button>
             <Button onClick={disableEditing} size={"sm"} variant={"ghost"}>
               <X className="w-5 h-5" />
@@ -139,7 +141,7 @@ function TaskForm({
         className="h-auto px-2 py-1.5 w-full justify-start text-muted-foreground/70 text-sm"
       >
         <Plus className="h-4 w-4 mr-2" />
-        Add Task
+        {t("addTask")}
       </Button>
     </div>
   );

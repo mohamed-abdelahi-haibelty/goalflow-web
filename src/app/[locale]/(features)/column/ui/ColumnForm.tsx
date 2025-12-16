@@ -19,8 +19,10 @@ import { useParams } from "next/navigation";
 import { createColumn } from "../action/createColumn";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 function ColumnForm() {
+  const t = useTranslations("columnForm");
   const formRef = useRef<ComponentRef<"form">>(null);
   const params = useParams();
   const [isPending, startTransition] = useTransition();
@@ -66,12 +68,12 @@ function ColumnForm() {
       const res = await createColumn(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
       if (res.success) {
-        toast.success(res.message || "Column created successfully!");
+        toast.success(t("toast.createSuccess"));
         disableEditing();
         form.reset();
       } else {
@@ -88,7 +90,7 @@ function ColumnForm() {
               });
             }
           });
-          toast.error("Please check the form for errors.");
+          toast.error(t("toast.formError"));
         }
       }
     });
@@ -111,7 +113,7 @@ function ColumnForm() {
                   <FormControl>
                     <Input
                       className="text-sm px-2 py-1 h-7 font-medium border-transparent shadow-none hover:border-input focus:border-input transition"
-                      placeholder="Enter column name..."
+                      placeholder={t("placeholder")}
                       {...field}
                     />
                   </FormControl>
@@ -140,11 +142,11 @@ function ColumnForm() {
               <Button disabled={isPending} className="border">
                 {isPending ? (
                   <div className="flex items-center gap-1">
-                    <span>Saving…</span>
+                    <span>{t("saving")}</span>
                     <Spinner />
                   </div>
                 ) : (
-                  "Add Column"
+                  t("addColumn")
                 )}
               </Button>
               <Button onClick={disableEditing} size={"sm"} variant={"ghost"}>
@@ -162,8 +164,8 @@ function ColumnForm() {
         onClick={enableEditing}
         className="w-full rounded-md bg-card hover:bg-card/80 transition p-3 flex items-center font-medium text-sm"
       >
-        <Plus className="w-4 h-4 mr-2" />
-        Add a Column
+        <Plus className="w-4 h-4 me-2" />
+        {t("addColumn")}
       </button>
     </ColumnWrapper>
   );

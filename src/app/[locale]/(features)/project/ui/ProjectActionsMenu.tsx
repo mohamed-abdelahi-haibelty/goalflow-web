@@ -33,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { renameProject } from "../action/renameProject";
 import { deleteProject } from "../action/deleteProject";
+import { useTranslations } from "next-intl";
 
 interface ProjectActionsMenuProps {
   projectId: string;
@@ -48,16 +49,17 @@ export function ProjectActionsMenu({
   const [newName, setNewName] = useState(projectName);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const t = useTranslations("projectActions");
 
   const handleRename = () => {
     startTransition(async () => {
       const res = await renameProject(projectId, newName);
       if (res.success) {
-        toast.success(res.message);
+        toast.success(t("toast.renameSuccess"));
         setOpenRename(false);
         router.refresh();
       } else {
-        toast.error(res.message);
+        toast.error(t("toast.renameFailed"));
       }
     });
   };
@@ -66,11 +68,11 @@ export function ProjectActionsMenu({
     startTransition(async () => {
       const res = await deleteProject(projectId);
       if (res.success) {
-        toast.success(res.message);
+        toast.success(t("toast.deleteSuccess"));
         setOpenDelete(false);
         router.push("/"); // Will trigger the root page logic to redirect to another project
       } else {
-        toast.error(res.message);
+        toast.error(t("toast.deleteFailed"));
       }
     });
   };
@@ -81,13 +83,13 @@ export function ProjectActionsMenu({
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <MoreHorizontal className="h-4 w-4" />
-            <span className="sr-only">Open menu</span>
+            <span className="sr-only">{t("openMenu")}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setOpenRename(true)}>
             <Pencil className="mr-2 h-4 w-4" />
-            Rename
+            {t("rename")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -95,7 +97,7 @@ export function ProjectActionsMenu({
             className="text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete
+            {t("delete")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -104,22 +106,22 @@ export function ProjectActionsMenu({
       <Dialog open={openRename} onOpenChange={setOpenRename}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Rename Project</DialogTitle>
+            <DialogTitle>{t("rename")}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
             <Input
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="Project Name"
+              placeholder={t("placeholder")}
             />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setOpenRename(false)}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button onClick={handleRename} disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Save
+              {t("save")}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -129,15 +131,13 @@ export function ProjectActionsMenu({
       <AlertDialog open={openDelete} onOpenChange={setOpenDelete}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogTitle>{t("confirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the
-              project <span className="font-bold">{projectName}</span> and all
-              its tasks.
+              {t("confirmDescription", { projectName })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancel")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -146,7 +146,7 @@ export function ProjectActionsMenu({
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={isPending}
             >
-              {isPending ? "Deleting..." : "Delete"}
+              {isPending ? t("deleting") : t("delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

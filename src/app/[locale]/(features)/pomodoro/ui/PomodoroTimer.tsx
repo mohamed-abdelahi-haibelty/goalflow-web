@@ -1,8 +1,8 @@
 "use client";
 
-import TimerCircle, { getModeDuration } from "./TimerCircle";
+import TimerCircle from "./TimerCircle";
 import TimerModeSwitcher from "./TimerModeSwitcher";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   completeTaskSession,
   pauseTimer,
@@ -19,12 +19,13 @@ import {
   Task,
   TimerSettings,
 } from "@/generated/prisma/browser";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getDirection, MODE_I18N_KEY } from "@/lib/utils";
 import PomodoroSettingsModal from "./PomodoroSettingsModal";
 import useSound from "use-sound";
 import { toast } from "sonner";
 import { usePomodoro } from "../hooks/usePomodoro";
 import { ActionsResponse } from "@/types";
+import { useLocale, useTranslations } from "next-intl";
 
 type Props = {
   initialTimer: ActiveTimer;
@@ -56,6 +57,9 @@ function PomodoroTimer({
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isInitialMount, setIsInitialMount] = useState(true);
   const router = useRouter();
+  const t = useTranslations();
+  const locale = useLocale();
+  const direction = getDirection(locale);
 
   // Sound Setup
   const volume = initialSettings.soundVolume / 100;
@@ -78,7 +82,9 @@ function PomodoroTimer({
 
   // Update document title
   useEffect(() => {
-    document.title = `${formatTime(timeLeft)} - ${timerState.mode}`;
+    document.title = `${formatTime(timeLeft)} - ${t(
+      MODE_I18N_KEY[timerState.mode]
+    )}`;
   }, [timeLeft, timerState.mode]);
 
   // Sync from server ONLY if status changed externally (e.g. another tab)
@@ -98,12 +104,11 @@ function PomodoroTimer({
 
   async function handleTimerComplete() {
     playNotification();
-    toast.success("Session Completed!", {
-      description: `You've completed a ${timerState.mode
-        .toLowerCase()
-        .replace("_", " ")} session.`,
+    toast.success(t("timer.sessionCompleted"), {
+      description: t("timer.sessionDescription", {
+        mode: t(MODE_I18N_KEY[timerState.mode]),
+      }),
     });
-
     // We replicate the server logic here to switch modes instantly
     const currentMode = timerState.mode;
     const currentCount = timerState.sessionsCount;
@@ -197,8 +202,11 @@ function PomodoroTimer({
           className="flex items-center gap-1 text-muted-foreground hover:text-foreground"
           onClick={() => router.back()}
         >
-          <ArrowLeft size={16} />
-          <span>Back to project board</span>
+          <ArrowLeft
+            className={direction === "rtl" ? "rotate-180" : ""}
+            size={16}
+          />
+          <span>{t("timer.back")}</span>
         </Button>
         <h2 className="text-xl font-semibold mt-2 text-center">
           {task?.title}
@@ -238,7 +246,7 @@ function PomodoroTimer({
       </div>
 
       <div className="mt-4 text-sm text-muted-foreground">
-        Completed sessions: {timerState.sessionsCount}
+        {t("timer.completedSessions")} : {timerState.sessionsCount}
       </div>
 
       {/* Settings Modal */}

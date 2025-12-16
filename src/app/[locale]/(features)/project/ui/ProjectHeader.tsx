@@ -11,9 +11,18 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getProjectById } from "../action/getProjectById";
 import { ProjectActionsMenu } from "../ui/ProjectActionsMenu";
 import { ModeToggle } from "@/components/ModeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { getTranslations } from "next-intl/server";
 
-export async function ProjectHeader({ projectId }: { projectId: string }) {
+export async function ProjectHeader({
+  projectId,
+  direction,
+}: {
+  projectId: string;
+  direction: string;
+}) {
   const { data: project } = await getProjectById(projectId);
+  const t = await getTranslations("breadcrumb");
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2">
@@ -24,9 +33,9 @@ export async function ProjectHeader({ projectId }: { projectId: string }) {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink>Project</BreadcrumbLink>
+              <BreadcrumbLink>{t("project")}</BreadcrumbLink>
             </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden md:block" />
+            <BreadcrumbSeparator dir={direction} className="hidden md:block" />
             <BreadcrumbItem>
               <BreadcrumbPage>{project?.name}</BreadcrumbPage>
             </BreadcrumbItem>
@@ -34,7 +43,8 @@ export async function ProjectHeader({ projectId }: { projectId: string }) {
         </Breadcrumb>
       </div>
 
-      <div className="ml-auto px-4 flex items-center gap-x-0.5">
+      <div className="ms-auto px-4 flex items-center gap-x-0.5">
+        <LanguageSwitcher />
         <ModeToggle />
         {project && (
           <ProjectActionsMenu

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
+import { getDirection } from "@/lib/utils";
 
 const mabry = localFont({
   src: [
@@ -54,8 +55,9 @@ export default async function RootLayout({
   }
 
   setRequestLocale(locale);
+  const direction = getDirection(locale);
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} dir={direction} suppressHydrationWarning>
       <body
         suppressHydrationWarning
         className={`${mabry.variable} antialiased`}

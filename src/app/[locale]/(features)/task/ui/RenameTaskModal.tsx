@@ -27,6 +27,7 @@ import { useRouter } from "@/i18n/navigation";
 import { RenameTaskInput, renameTaskSchema } from "../types/types";
 import { renameTask } from "../action/renameTask";
 import { Task } from "@/generated/prisma/client";
+import { useTranslations } from "next-intl";
 
 interface RenameTaskProps {
   isOpen: boolean;
@@ -41,6 +42,7 @@ function RenameTaskModal({
   task,
   projectId,
 }: RenameTaskProps) {
+  const t = useTranslations("renameTaskModal");
   const [isPending, startTransition] = useTransition();
   const form = useForm<RenameTaskInput>({
     resolver: zodResolver(renameTaskSchema),
@@ -57,12 +59,12 @@ function RenameTaskModal({
       const res = await renameTask(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
       if (res.success) {
-        toast.success(res.message || "Task renamed successfully!");
+        toast.success(t("toast.renameSuccess"));
         form.reset();
         router.refresh();
         onClose();
@@ -81,7 +83,7 @@ function RenameTaskModal({
               });
             }
           });
-          toast.error("Please check the form for errors.");
+          toast.error(t("toast.formError"));
         }
       }
     });
@@ -93,7 +95,7 @@ function RenameTaskModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Rename Task</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -104,7 +106,7 @@ function RenameTaskModal({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Rename Task" {...field} />
+                    <Input placeholder={t("placeholder")} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -113,17 +115,17 @@ function RenameTaskModal({
 
             <DialogFooter className="mt-3">
               <DialogClose type="button" asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline">{t("cancel")}</Button>
               </DialogClose>
 
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <div className="flex items-center gap-1">
-                    <span>Saving…</span>
+                    <span>{t("saving")}</span>
                     <Spinner />
                   </div>
                 ) : (
-                  "Save"
+                  t("save")
                 )}
               </Button>
             </DialogFooter>

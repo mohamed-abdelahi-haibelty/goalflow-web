@@ -5,22 +5,28 @@ import { getProjects } from "./(features)/project/action/getProjects";
 import { createProject } from "./(features)/project/action/createProject";
 import { redirect } from "@/i18n/navigation";
 
-async function Home() {
+async function Home({
+  params,
+}: Readonly<{
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}>) {
+  const { locale } = await params;
   const session = await getUserSession();
-  if (!session) redirect({ href: "/auth", locale: "en" });
+  if (!session) redirect({ href: "/auth", locale: locale });
 
   const { data: projects } = await getProjects();
 
   // If projects exist, go to the first one (most recently created usually, or check sort order)
   if (projects?.length) {
-    return redirect({ href: `/project/${projects[0].id}`, locale: "en" });
+    return redirect({ href: `/project/${projects[0].id}`, locale: locale });
   }
 
   // If NO projects exist (First time user), create one
   const newProject = await createProject({ name: "General" }, false); // No flag needed
 
   if (newProject.success && newProject.data) {
-    redirect({ href: `/project/${newProject.data.id}`, locale: "en" });
+    redirect({ href: `/project/${newProject.data.id}`, locale: locale });
   }
 
   console.error("Failed to create project:", newProject);

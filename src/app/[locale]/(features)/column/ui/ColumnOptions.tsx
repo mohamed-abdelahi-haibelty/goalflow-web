@@ -13,6 +13,7 @@ import { useTransition } from "react";
 import { deleteColumn } from "../action/deleteColumn";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { useTranslations } from "next-intl";
 
 type Props = {
   column: Column;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 function ColumnOptions({ column, onAddTask }: Props) {
+  const t = useTranslations("columnOptions");
   const [isPending, startTransition] = useTransition();
 
   const onDeleteColumn = () => {
@@ -28,15 +30,15 @@ function ColumnOptions({ column, onAddTask }: Props) {
       const res = await deleteColumn(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
       if (res.success) {
-        toast.success(res.message);
+        toast.success(t("toast.deleteSuccess"));
       } else {
         if (res.message) {
-          toast.error(res.message);
+          toast.error(t("toast.deleteFailed"));
         }
       }
     });
@@ -55,7 +57,7 @@ function ColumnOptions({ column, onAddTask }: Props) {
         align="start"
       >
         <div className="text-sm font-medium text-center text-neutral-600 pb-4">
-          Column Actions
+          {t("title")}
         </div>
         <PopoverClose asChild>
           <Button
@@ -71,7 +73,7 @@ function ColumnOptions({ column, onAddTask }: Props) {
           variant={"ghost"}
         >
           {" "}
-          Add Task...
+          {t("addTask")}
         </Button>
 
         <Button
@@ -81,11 +83,11 @@ function ColumnOptions({ column, onAddTask }: Props) {
         >
           {isPending ? (
             <div className="flex gap-1 items-center">
-              <span>Deleting...</span>
+              <span>{t("deleting")}</span>
               <Spinner className="w-4 h-4" />
             </div>
           ) : (
-            "Delete Column"
+            t("deleteColumn")
           )}
         </Button>
       </PopoverContent>

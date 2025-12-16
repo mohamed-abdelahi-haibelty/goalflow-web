@@ -1,14 +1,13 @@
 import { getProjects } from "@/app/[locale]/(features)/project/action/getProjects";
 import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { ProjectSwitcher } from "@/components/project-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { NavReport } from "./ui/NavReport";
 
 export async function AppSidebar({
   ...props
@@ -16,11 +15,9 @@ export async function AppSidebar({
   const projects = await getProjects();
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <ProjectSwitcher projects={projects.data ?? []} />
-      </SidebarHeader>
       <SidebarContent>
-        <NavProjects />
+        <NavProjects projects={projects.data ?? []} />
+        <NavReport />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

@@ -1,1 +1,168 @@
-{}
+{
+  "loginPage": {
+    "appName": "GoalFlow",
+    "tagline": "Kanban + Pomodoro pour une productivité maximale",
+    "footer": {
+      "prefix": "En continuant, vous acceptez nos",
+      "terms": "Conditions d’utilisation",
+      "and": "et",
+      "privacy": "Politique de confidentialité"
+    }
+  },
+  "loginForm": {
+    "title": "Bonjour ! 👋",
+    "subtitle": "Choisissez une méthode de connexion",
+    "loading": "Chargement...",
+    "providers": {
+      "google": "Continuer avec Google",
+      "github": "Continuer avec GitHub"
+    },
+    "toast": {
+      "successGoogle": "Connecté avec Google, redirection en cours...",
+      "successGithub": "Connecté avec GitHub, redirection en cours...",
+      "error": "Échec de la connexion. Une erreur s'est produite."
+    }
+  },
+  "columnHeader": {
+    "placeholder": "Renommer la liste...",
+    "toast": {
+      "renameSuccess": "Liste renommée avec succès.",
+      "renameFailed": "Le renommage a échoué.",
+      "formError": "Veuillez vérifier le formulaire.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "columnOptions": {
+    "title": "Actions de la liste",
+    "addTask": "Ajouter une tâche…",
+    "deleteColumn": "Supprimer la liste",
+    "deleting": "Suppression...",
+    "toast": {
+      "deleteSuccess": "Liste supprimée avec succès.",
+      "deleteFailed": "Échec de la suppression de la liste.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "taskOptions": {
+    "title": "Actions de la tâche",
+    "rename": "Renommer",
+    "delete": "Supprimer la tâche",
+    "deleting": "Suppression...",
+    "toast": {
+      "deleteSuccess": "Tâche supprimée avec succès.",
+      "deleteFailed": "Échec de la suppression de la tâche.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "renameTaskModal": {
+    "title": "Renommer la tâche",
+    "placeholder": "Renommer la tâche",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "toast": {
+      "renameSuccess": "Tâche renommée avec succès.",
+      "formError": "Veuillez vérifier le formulaire.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "taskForm": {
+    "placeholder": "Entrez le titre de la tâche...",
+    "addTask": "Ajouter une tâche",
+    "adding": "Ajout...",
+    "toast": {
+      "createFailed": "Échec de la création de la tâche.",
+      "formError": "Veuillez vérifier le formulaire.",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer."
+    }
+  },
+  "columnForm": {
+    "placeholder": "Entrez le nom de la liste...",
+    "addColumn": "Ajouter une liste",
+    "saving": "Enregistrement…",
+    "toast": {
+      "createSuccess": "Liste créée avec succès !",
+      "genericError": "Une erreur s'est produite. Veuillez réessayer.",
+      "formError": "Veuillez vérifier le formulaire."
+    }
+  },
+  "projectActions": {
+    "openMenu": "Ouvrir le menu",
+    "rename": "Renommer",
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "placeholder": "Nom du projet",
+    "confirmTitle": "Êtes-vous absolument sûr ?",
+    "confirmDescription": "Cette action est irréversible. Cela supprimera définitivement le projet {projectName} et toutes ses tâches.",
+    "deleting": "Suppression…",
+    "toast": {
+      "renameSuccess": "Projet renommé avec succès.",
+      "renameFailed": "Échec du renommage du projet.",
+      "deleteSuccess": "Projet supprimé avec succès.",
+      "deleteFailed": "Échec de la suppression du projet."
+    }
+  },
+  "nav": {
+    "report": {
+      "label": "Analytique",
+      "global": "Rapport global"
+    },
+    "projects": {
+      "label": "Projets",
+      "create": "Créer un projet",
+      "more": "Plus"
+    }
+  },
+  "project": {
+    "create": {
+      "title": "Ajouter un projet",
+      "placeholder": "Nom du projet",
+      "create": "Créer",
+      "creating": "Création en cours…",
+      "cancel": "Annuler",
+      "toast": {
+        "success": "Projet créé avec succès !",
+        "error": "Une erreur est survenue. Veuillez réessayer.",
+        "formError": "Veuillez vérifier le formulaire."
+      }
+    }
+  },
+  "timer": {
+    "back": "Retour au tableau du projet",
+    "completedSessions": "Sessions terminées",
+    "sessionCompleted": "Session terminée !",
+    "sessionDescription": "Vous avez terminé une session de {{mode}}.",
+    "controls": {
+      "start": "Démarrer",
+      "pause": "Pause",
+      "reset": "Réinitialiser",
+      "settings": "Paramètres"
+    },
+    "modes": {
+      "pomodoro": "Concentration",
+      "shortBreak": "Pause courte",
+      "longBreak": "Pause longue"
+    }
+  },
+  "pomodoroSettings": {
+    "title": "Paramètres du minuteur",
+    "work": "Durée de travail (minutes)",
+    "short": "Pause courte (minutes)",
+    "long": "Pause longue (minutes)",
+    "rounds": "Cycles avant pause longue",
+    "volume": "Volume du son",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "success": "Paramètres mis à jour avec succès !",
+    "error": "Échec de la mise à jour. Veuillez réessayer."
+  },
+  "breadcrumb": {
+    "project": "Projet"
+  },
+  "navUser": {
+    "upgrade": "Passer à l'abonnement Pro",
+    "logout": "Se déconnecter"
+  }
+}

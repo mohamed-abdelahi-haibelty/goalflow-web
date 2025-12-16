@@ -28,6 +28,7 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { TimerSettings } from "@/generated/prisma/client";
 import { useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 
 const settingsSchema = z.object({
   work: z
@@ -64,6 +65,7 @@ function PomodoroSettingsModal({
 }: PomodoroSettingsModalProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const t = useTranslations("pomodoroSettings");
 
   const form = useForm<SettingsInput>({
     resolver: zodResolver(settingsSchema),
@@ -87,11 +89,11 @@ function PomodoroSettingsModal({
           volume: values.volume,
         });
 
-        toast.success("Settings updated successfully!");
+        toast.success(t("success"));
         router.refresh();
         onClose();
       } catch (error) {
-        toast.error("Failed to update settings. Please try again.");
+        toast.error(t("error"));
       }
     });
   };
@@ -102,7 +104,7 @@ function PomodoroSettingsModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>Timer Settings</DialogTitle>
+          <DialogTitle>{t("title")}</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -116,7 +118,7 @@ function PomodoroSettingsModal({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Work Duration (minutes)</FormLabel>
+                  <FormLabel>{t("work")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -136,7 +138,7 @@ function PomodoroSettingsModal({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Short Break (minutes)</FormLabel>
+                  <FormLabel>{t("short")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -156,7 +158,7 @@ function PomodoroSettingsModal({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Long Break (minutes)</FormLabel>
+                  <FormLabel>{t("long")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -176,7 +178,7 @@ function PomodoroSettingsModal({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Rounds before long break</FormLabel>
+                  <FormLabel>{t("rounds")}</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
@@ -196,7 +198,9 @@ function PomodoroSettingsModal({
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Sound Volume: {field.value}%</FormLabel>
+                  <FormLabel>
+                    {t("volume")}: {field.value}%
+                  </FormLabel>
                   <FormControl>
                     <Slider
                       min={0}
@@ -215,18 +219,18 @@ function PomodoroSettingsModal({
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" type="button">
-                  Cancel
+                  {t("cancel")}
                 </Button>
               </DialogClose>
 
               <Button type="submit" disabled={isPending}>
                 {isPending ? (
                   <div className="flex items-center gap-1">
-                    <span>Saving…</span>
+                    <span>{t("saving")}</span>
                     <Spinner />
                   </div>
                 ) : (
-                  "Save Changes"
+                  t("save")
                 )}
               </Button>
             </DialogFooter>

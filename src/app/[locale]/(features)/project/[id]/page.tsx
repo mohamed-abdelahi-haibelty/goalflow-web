@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { getProjectById } from "../action/getProjectById";
 import ColumnContainer from "../../column/ui/ColumnContainer";
 import { getColumns } from "../../column/action/getColumns";
+import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ id: string; locale: string }>;
@@ -10,11 +11,13 @@ interface PageProps {
 
 async function page({ params }: PageProps) {
   const session = await getUserSession();
-  const { id } = await params;
+  const { id, locale } = await params;
 
   if (!session) {
     redirect("/auth");
   }
+
+  setRequestLocale(locale);
 
   const project = await getProjectById(id);
 

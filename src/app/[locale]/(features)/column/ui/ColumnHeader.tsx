@@ -17,6 +17,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateColumn } from "../action/updateColumn";
 import ColumnOptions from "./ColumnOptions";
+import { useTranslations } from "next-intl";
 
 type Props = {
   data: Column;
@@ -24,6 +25,8 @@ type Props = {
 };
 
 function ColumnHeader({ data, onAddTask }: Props) {
+  const t = useTranslations("columnHeader");
+
   const [title, setTitle] = useState(data.name);
   const formRef = useRef<ComponentRef<"form">>(null);
   const params = useParams();
@@ -72,18 +75,18 @@ function ColumnHeader({ data, onAddTask }: Props) {
       const res = await updateColumn(values);
 
       if (!res) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(t("toast.genericError"));
         return;
       }
 
       if (res.success) {
-        toast.success(`Renamed To ${res.data?.name}`);
+        toast.success(t("toast.renameSuccess"));
         setTitle(res.data?.name!);
         disableEditing();
         form.reset();
       } else {
         setTitle(prevTitle);
-        toast.error("Rename failed");
+        toast.error(t("toast.renameFailed"));
         if (res.message) {
           toast.error(res.message);
         }
@@ -97,7 +100,7 @@ function ColumnHeader({ data, onAddTask }: Props) {
               });
             }
           });
-          toast.error("Please check the form for errors.");
+          toast.error(t("toast.formError"));
         }
       }
     });
@@ -120,7 +123,7 @@ function ColumnHeader({ data, onAddTask }: Props) {
                   <FormControl>
                     <Input
                       className="text-sm px-2 py-1 h-7 font-medium border-transparent shadow-none hover:border-input focus:border-input transition"
-                      placeholder="Rename Column..."
+                      placeholder={t("placeholder")}
                       {...field}
                       onBlur={() => form.handleSubmit(onSubmit)()}
                     />

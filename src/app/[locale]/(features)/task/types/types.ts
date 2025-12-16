@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { boolean } from "zod";
 
 export const createTaskSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -39,3 +39,13 @@ export const renameTaskSchema = z.object({
 });
 
 export type RenameTaskInput = z.infer<typeof renameTaskSchema>;
+
+export const toggleTaskCompletedSchema = z.object({
+  id: z.string(),
+  completed: z.boolean(),
+  projectId: z.string(),
+});
+
+export type ToggleTaskCompletedInput = z.infer<
+  typeof toggleTaskCompletedSchema
+>;

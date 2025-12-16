@@ -74,7 +74,6 @@ export async function startTaskTimer(
       },
     });
 
-    revalidatePath(`/project/${projectId}/tasks/${taskId}`);
     return { success: true, message: "Timer started" };
   } catch (error) {
     console.error("Failed to start timer:", error);
@@ -159,7 +158,7 @@ export async function resetTimer(taskId: string, projectId: string) {
         // We don't reset sessionsCount here, only the current ticking timer
       },
     });
-    revalidatePath(`/project/${projectId}/tasks/${taskId}`);
+
     return { success: true, message: "Timer reseted" };
   } catch (error) {
     return { success: false, message: "Could not reset timer" };
@@ -181,7 +180,7 @@ export async function pauseTimer(
         pausedWhen: remainingSeconds, // Save exactly how much time was left
       },
     });
-    revalidatePath(`/project/${projectId}/tasks/${taskId}`);
+
     return { success: true, message: "Timer paused" };
   } catch (error) {
     return { success: false, message: "Could not pause timer" };
@@ -205,7 +204,6 @@ export async function switchMode(
       },
     });
 
-    revalidatePath(`/project/${projectId}/tasks/${taskId}`);
     return { success: true, message: "Mode switched" };
   } catch (error) {
     return { success: false, message: "Could not switch moode" };

@@ -82,11 +82,12 @@ function PomodoroTimer({
 
   // Update document title
   useEffect(() => {
-    document.title = `${formatTime(timeLeft)} - ${t(
-      MODE_I18N_KEY[timerState.mode]
-    )}`;
-  }, [timeLeft, timerState.mode]);
-
+    document.title = task?.title
+      ? `${formatTime(timeLeft)} - ${t(MODE_I18N_KEY[timerState.mode])} | ${
+          task.title
+        }`
+      : `${formatTime(timeLeft)} - ${t(MODE_I18N_KEY[timerState.mode])}`;
+  }, [timeLeft, timerState.mode, task?.title]);
   // Sync from server ONLY if status changed externally (e.g. another tab)
   // This prevents the "Prop Mirroring" loop bug.
   useEffect(() => {

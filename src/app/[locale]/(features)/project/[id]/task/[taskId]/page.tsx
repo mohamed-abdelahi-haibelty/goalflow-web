@@ -10,7 +10,6 @@ async function page({ params }: Props) {
   const { id: projectId, taskId } = await params;
   const { timer, settings } = await getTaskTimer(taskId);
   const { data: task } = await getTaskById({ taskId, projectId });
-  console.log("task", task);
   return (
     <PomodoroTimer
       initialTimer={timer}

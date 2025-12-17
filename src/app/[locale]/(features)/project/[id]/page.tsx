@@ -9,6 +9,15 @@ interface PageProps {
   params: Promise<{ id: string; locale: string }>;
 }
 
+export async function generateMetadata({ params }: PageProps) {
+  const { id } = await params;
+  const project = await getProjectById(id);
+
+  return {
+    title: project?.data?.name ? `GoalFlow | ${project.data.name}` : "GoalFlow",
+  };
+}
+
 async function page({ params }: PageProps) {
   const session = await getUserSession();
   const { id, locale } = await params;

@@ -2,10 +2,14 @@ import { z } from "zod";
 import { Column, Task } from "@/generated/prisma/client";
 
 export type ColumnWithTasks = Column & {
-  tasks: Task[];
+  tasks: TaskWithSessionCount[];
 };
 
-export type TaskWithColumn = Task & {
+export type TaskWithSessionCount = Task & {
+  sessionCount: number;
+};
+
+export type TaskWithColumn = TaskWithSessionCount & {
   column: Column;
 };
 

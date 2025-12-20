@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Task } from "@/generated/prisma/client";
 import { Draggable } from "@hello-pangea/dnd";
 import TaskOptions from "./TaskOptions";
 import { Link } from "@/i18n/navigation";
 import { ToggleTaskCompleted } from "../action/toggleTaskCompleted";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TaskWithSessionCount } from "../../column/types/types";
 
 type Props = {
-  data: Task;
+  data: TaskWithSessionCount;
   index: number;
   projectId: string;
 };
@@ -44,7 +44,7 @@ function TaskItem({ data, index, projectId }: Props) {
           role="button"
           className="group cursor-pointer flex items-center gap-x-2 justify-between border border-transparent hover:border-black py-2 px-3 text-sm bg-background rounded-md"
         >
-          <div className="flex items-center min-w-0">
+          <div className="flex items-center min-w-0 flex-1">
             {/* stop propagation to avoid starting drag when clicking */}
             <Checkbox
               checked={completed}
@@ -56,11 +56,16 @@ function TaskItem({ data, index, projectId }: Props) {
             />
             <Link
               href={`/project/${projectId}/task/${data.id}`}
-              className={`truncate ${
+              className={` flex items-center min-w-0 flex-1 ${
                 completed ? "line-through text-muted-foreground" : ""
               }`}
             >
-              <span>{data.title}</span>
+              <span className="truncate">{data.title}</span>
+              {data.sessionCount > 0 && (
+                <span className="ms-2 text-xs text-muted-foreground shrink-0">
+                  {` ${data.sessionCount} 🍅 `}
+                </span>
+              )}
             </Link>
           </div>
           <span>

@@ -37,16 +37,32 @@ export async function getColumns(
           orderBy: {
             order: "asc",
           },
+          include: {
+            _count: {
+              select: { pomodoroSessions: true },
+            },
+          },
         },
       },
       orderBy: { order: "asc" },
     });
 
+    const columnWithTasks = columns.map((column) => ({
+      ...column,
+      tasks: column.tasks.map((task) => {
+        const { _count, ...rest } = task;
+        return {
+          ...rest,
+          sessionCount: _count.pomodoroSessions,
+        };
+      }),
+    }));
+
     return {
       success: true,
       message: "Columns fetched",
       code: 200,
-      data: columns,
+      data: columnWithTasks,
     };
   } catch (err) {
     return {

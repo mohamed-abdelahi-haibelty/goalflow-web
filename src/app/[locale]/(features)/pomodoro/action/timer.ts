@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getUserSession } from "@/actions/auth/getUserSession";
 import { Mode } from "@/generated/prisma/enums";
 import { ActionsResponse } from "@/types";
+import { updateStreak } from "../../streak/action/updateStreak";
 
 export async function getTaskTimer(taskId: string) {
   const { data: globalSettings, success } = await getGlobalSettings();
@@ -137,7 +138,22 @@ export async function completeTaskSession(taskId: string, projectId: string) {
       });
     });
 
+    if (timer.mode === Mode.POMODORO) {
+      console.log("Triggering Streak Update for user:", session.user.id);
+
+      const streakResult = await updateStreak(session.user.id);
+
+      if (!streakResult.success) {
+        console.error("Streak Update Failed:", streakResult.message);
+      } else {
+        console.log("Streak Updated Successfully:", streakResult.data);
+      }
+    } else {
+      console.log("Streak Update Skipped: Session was not POMODORO mode.");
+    }
+
     revalidatePath(`/project/${projectId}/tasks/${taskId}`);
+    revalidatePath(`/project/${projectId}`);
 
     return { success: true, message: "Session completed" };
   } catch (error) {

@@ -132,7 +132,7 @@
     "back": "Back to project board",
     "completedSessions": "Completed sessions",
     "sessionCompleted": "Session completed!",
-    "sessionDescription": "You've completed a {{mode}} session.",
+    "sessionDescription": "You've completed a  session.",
     "controls": {
       "start": "Start",
       "pause": "Pause",
@@ -164,5 +164,9 @@
   "navUser": {
     "upgrade": "Go Pro",
     "logout": "Log out"
+  },
+  "StreakCounter": {
+    "streakActive": "Streak active! Keep it up!",
+    "streakInactive": "Complete a Pomodoro to continue your streak!"
   }
 }

@@ -63,7 +63,7 @@ export default async function RootLayout({
         className={`${mabry.variable} antialiased`}
       >
         <NextIntlClientProvider>
-          <Toaster position="top-right" />
+          <Toaster position="bottom-right" />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

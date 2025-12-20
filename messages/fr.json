@@ -132,7 +132,7 @@
     "back": "Retour au tableau du projet",
     "completedSessions": "Sessions terminées",
     "sessionCompleted": "Session terminée !",
-    "sessionDescription": "Vous avez terminé une session de {{mode}}.",
+    "sessionDescription": "Vous avez terminé une session .",
     "controls": {
       "start": "Démarrer",
       "pause": "Pause",
@@ -164,5 +164,9 @@
   "navUser": {
     "upgrade": "Passer à l'abonnement Pro",
     "logout": "Se déconnecter"
+  },
+  "StreakCounter": {
+    "streakActive": "Streak active ! Continuez comme ça !",
+    "streakInactive": "Terminez un Pomodoro pour continuer votre Streak !"
   }
 }

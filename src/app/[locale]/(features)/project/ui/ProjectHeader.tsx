@@ -13,6 +13,10 @@ import { ProjectActionsMenu } from "../ui/ProjectActionsMenu";
 import { ModeToggle } from "@/components/ModeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getTranslations } from "next-intl/server";
+import { getUserSession } from "@/actions/auth/getUserSession";
+import db from "@/lib/db";
+import { canUpdateStreakToday, isStreakBroken } from "@/lib/streak";
+import { StreakCounter } from "../../streak/ui/StreakCounter";
 
 export async function ProjectHeader({
   projectId,
@@ -21,8 +25,39 @@ export async function ProjectHeader({
   projectId: string;
   direction: string;
 }) {
-  const { data: project } = await getProjectById(projectId);
-  const t = await getTranslations("breadcrumb");
+  // 1. Fetch Project & User Session in parallel
+  const [projectData, session, t] = await Promise.all([
+    getProjectById(projectId),
+    getUserSession(),
+    getTranslations("breadcrumb"),
+  ]);
+
+  const project = projectData?.data;
+
+  // 2. Fetch User Streak Data
+  let streakCount = 0;
+  let isActiveToday = false;
+
+  if (session?.user?.id) {
+    const user = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { streakCount: true, lastStreakUpgradeDate: true },
+    });
+
+    if (user) {
+      // Logic: If streak is broken (missed more than 1 day), display 0.
+      // Otherwise, display the DB count.
+      const broken = isStreakBroken({
+        lastStreakDate: user.lastStreakUpgradeDate,
+      });
+      streakCount = broken ? 0 : user.streakCount;
+
+      // Logic: If they CANNOT update streak today, it means they ALREADY did it.
+      isActiveToday = !canUpdateStreakToday({
+        lastStreakDate: user.lastStreakUpgradeDate,
+      });
+    }
+  }
 
   return (
     <header className="flex h-16 shrink-0 items-center gap-2">
@@ -43,9 +78,14 @@ export async function ProjectHeader({
         </Breadcrumb>
       </div>
 
-      <div className="ms-auto px-4 flex items-center gap-x-0.5">
-        <LanguageSwitcher />
-        <ModeToggle />
+      <div className="ms-auto px-4 flex items-center gap-3">
+        {session && (
+          <StreakCounter count={streakCount} isActiveToday={isActiveToday} />
+        )}
+        <div className="flex items-center gap-0.5">
+          <LanguageSwitcher />
+          <ModeToggle />
+        </div>
         {project && (
           <ProjectActionsMenu
             projectId={project.id}

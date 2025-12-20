@@ -132,7 +132,7 @@
     "back": "العودة إلى لوحة المشروع",
     "completedSessions": "الجلسات المكتملة",
     "sessionCompleted": "تم إكمال الجلسة!",
-    "sessionDescription": "لقد أكملت جلسة {{mode}}.",
+    "sessionDescription": "لقد أكملت جلسة .",
     "controls": {
       "start": "ابدأ",
       "pause": "إيقاف مؤقت",
@@ -164,5 +164,9 @@
   "navUser": {
     "upgrade": "الترقية إلى الباقة الاحترافية",
     "logout": "تسجيل الخروج"
+  },
+  "StreakCounter": {
+    "streakActive": "سلسلة إنجازاتك مستمرة! حافظ على تقدمك!",
+    "streakInactive": "ابدأ جلسة بومودورو للحفاظ على سلسلتك!"
   }
 }

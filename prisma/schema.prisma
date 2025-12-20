@@ -15,6 +15,13 @@ model User {
   emailVerified Boolean   @default(false)
   image         String?
   role          Role        @default(USER) 
+
+  // 🔥 Streak fields (safe)
+  streakCount           Int            @default(0)
+  longestStreak         Int            @default(0)
+  lastStreakUpgradeDate DateTime?
+  streakStatus          StreakStatus   @default(UNINITIATED)
+
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
@@ -206,6 +213,11 @@ enum TimerStatus {
  IDLE
  RUNNING
  PAUSED
+}
+
+enum StreakStatus {
+  UNINITIATED
+  STARTED
 }
 
 

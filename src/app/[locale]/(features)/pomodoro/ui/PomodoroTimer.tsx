@@ -106,9 +106,7 @@ function PomodoroTimer({
   async function handleTimerComplete() {
     playNotification();
     toast.success(t("timer.sessionCompleted"), {
-      description: t("timer.sessionDescription", {
-        mode: t(MODE_I18N_KEY[timerState.mode]),
-      }),
+      description: t("timer.sessionDescription"),
     });
     // We replicate the server logic here to switch modes instantly
     const currentMode = timerState.mode;

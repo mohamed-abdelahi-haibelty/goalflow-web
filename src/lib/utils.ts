@@ -25,6 +25,7 @@ export function getDirection(locale: string): "ltr" | "rtl" {
 }
 
 import { Mode } from "@/generated/prisma/browser";
+import { Table } from "@tanstack/react-table"
 
 export const MODE_I18N_KEY: Record<Mode, string> = {
   POMODORO: "timer.modes.pomodoro",
@@ -39,5 +40,29 @@ export const formatTime = (seconds: number) => {
   const s = (seconds % 60).toString().padStart(2, '0')
   return `${m}:${s}`
 }
+
+/**
+ * Reusable handler for multi-column text search.
+ */
+export const handleTableSearch = <TData>(
+  table: Table<TData>,
+  searchColumns: string[],
+  value: string
+) => {
+  searchColumns.forEach((col) => {
+    const column = table.getColumn(col);
+    if (column) column.setFilterValue(value);
+  });
+};
+
+/**
+ * Get the current search input value from the first search column.
+ */
+export const getTableSearchValue = <TData>(
+  table: Table<TData>,
+  searchColumns: string[]
+): string => {
+  return (table.getColumn(searchColumns[0])?.getFilterValue() as string) ?? "";
+};
 
 

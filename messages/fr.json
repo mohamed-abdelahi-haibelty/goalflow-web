@@ -168,5 +168,62 @@
   "StreakCounter": {
     "streakActive": "Streak active ! Continuez comme ça !",
     "streakInactive": "Terminez un Pomodoro pour continuer votre Streak !"
+  },
+  "report": {
+    "title": "Rapports de Projet",
+    "description": "Consultez les rapports détaillés de vos projets, le temps passé et l'achèvement des tâches",
+    "detailsTitle": "Détails du Projet",
+    "columns": {
+      "projectName": "Nom du Projet",
+      "timeSpent": "Temps Passé",
+      "taskCount": "Tâches Totales",
+      "completedTasks": "Tâches Terminées"
+    },
+    "filters": {
+      "allTime": "Tout le Temps",
+      "today": "Aujourd'hui",
+      "thisWeek": "Cette Semaine",
+      "thisMonth": "Ce Mois"
+    },
+    "time": {
+      "hours": "h",
+      "minutes": "min",
+      "seconds": "sec",
+      "noTime": "Aucun temps suivi"
+    },
+    "searchPlaceholder": "Rechercher par nom de projet...",
+    "error": {
+      "fetchFailed": "Échec du chargement des rapports. Veuillez réessayer."
+    },
+    "noData": "Aucun rapport disponible pour la période sélectionnée.",
+    "summary": {
+      "totalProjects": "Projets Totaux",
+      "totalHours": "Heures Travaillées",
+      "totalTasks": "Tâches Totales",
+      "completionRate": "Taux d'Achèvement"
+    },
+    "heatmap": {
+      "title": "Contributions",
+      "lastYear": "365 derniers jours",
+      "timeWorked": "Temps travaillé",
+      "sessions": "Sessions",
+      "noActivity": "Aucune activité"
+    },
+    "charts": {
+      "projectComparison": "Comparaison de Projets",
+      "hours": "heures",
+      "noData": "Aucune donnée disponible"
+    }
+  },
+  "table": {
+    "pagination": {
+      "selected": "{count} sur {total} ligne(s) sélectionnée(s).",
+      "rowsPerPage": "Lignes par page",
+      "pageInfo": "Page {current} sur {total}",
+      "firstPage": "Aller à la première page",
+      "lastPage": "Aller à la dernière page",
+      "nextPage": "Page suivante",
+      "prevPage": "Page précédente"
+    }
   }
 }

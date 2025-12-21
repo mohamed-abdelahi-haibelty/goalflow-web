@@ -168,5 +168,62 @@
   "StreakCounter": {
     "streakActive": "Streak active! Keep it up!",
     "streakInactive": "Complete a Pomodoro to continue your streak!"
+  },
+  "report": {
+    "title": "Project Reports",
+    "description": "View detailed reports of your projects, time spent, and task completion",
+    "detailsTitle": "Project Breakdown",
+    "columns": {
+      "projectName": "Project Name",
+      "timeSpent": "Time Spent",
+      "taskCount": "Total Tasks",
+      "completedTasks": "Completed Tasks"
+    },
+    "filters": {
+      "allTime": "All Time",
+      "today": "Today",
+      "thisWeek": "This Week",
+      "thisMonth": "This Month"
+    },
+    "time": {
+      "hours": "h",
+      "minutes": "min",
+      "seconds": "sec",
+      "noTime": "No time tracked"
+    },
+    "searchPlaceholder": "Search by project name...",
+    "error": {
+      "fetchFailed": "Failed to load reports. Please try again."
+    },
+    "noData": "No reports available for the selected period.",
+    "summary": {
+      "totalProjects": "Total Projects",
+      "totalHours": "Total Hours Worked",
+      "totalTasks": "Total Tasks",
+      "completionRate": "Completion Rate"
+    },
+    "heatmap": {
+      "title": "Contributions",
+      "lastYear": "Last 365 Days",
+      "timeWorked": "Time worked",
+      "sessions": "Sessions",
+      "noActivity": "No activity"
+    },
+    "charts": {
+      "projectComparison": "Project Comparison",
+      "hours": "hours",
+      "noData": "No data available for this period"
+    }
+  },
+  "table": {
+    "pagination": {
+      "selected": "{count} of {total} row(s) selected.",
+      "rowsPerPage": "Rows per page",
+      "pageInfo": "Page {current} of {total}",
+      "firstPage": "Go to first page",
+      "lastPage": "Go to last page",
+      "nextPage": "Go to next page",
+      "prevPage": "Go to previous page"
+    }
   }
 }

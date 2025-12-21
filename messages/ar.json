@@ -168,5 +168,62 @@
   "StreakCounter": {
     "streakActive": "سلسلة إنجازاتك مستمرة! حافظ على تقدمك!",
     "streakInactive": "ابدأ جلسة بومودورو للحفاظ على سلسلتك!"
+  },
+  "report": {
+    "title": "تقارير المشاريع",
+    "description": "اعرض التقارير التفصيلية لمشاريعك والوقت المستغرق وإنجاز المهام",
+    "detailsTitle": "تفاصيل المشاريع",
+    "columns": {
+      "projectName": "اسم المشروع",
+      "timeSpent": "الوقت المستغرق",
+      "taskCount": "إجمالي المهام",
+      "completedTasks": "المهام المنجزة"
+    },
+    "filters": {
+      "allTime": "كل الوقت",
+      "today": "اليوم",
+      "thisWeek": "هذا الأسبوع",
+      "thisMonth": "هذا الشهر"
+    },
+    "time": {
+      "hours": "س",
+      "minutes": "د",
+      "seconds": "ث",
+      "noTime": "لا يوجد وقت مسجل"
+    },
+    "searchPlaceholder": "البحث باسم المشروع...",
+    "error": {
+      "fetchFailed": "فشل تحميل التقارير. يرجى المحاولة مرة أخرى."
+    },
+    "noData": "لا توجد تقارير متاحة للفترة المحددة.",
+    "summary": {
+      "totalProjects": "إجمالي المشاريع",
+      "totalHours": "إجمالي ساعات العمل",
+      "totalTasks": "إجمالي المهام",
+      "completionRate": "معدل الإنجاز"
+    },
+    "heatmap": {
+      "title": "المساهمات",
+      "lastYear": "آخر 365 يومًا",
+      "timeWorked": "وقت العمل",
+      "sessions": "جلسات",
+      "noActivity": "لا يوجد نشاط"
+    },
+    "charts": {
+      "projectComparison": "مقارنة المشاريع",
+      "hours": "ساعات",
+      "noData": "لا توجد بيانات متاحة"
+    }
+  },
+  "table": {
+    "pagination": {
+      "selected": "{count} من {total} صفوف مختارة.",
+      "rowsPerPage": "عدد الصفوف في الصفحة",
+      "pageInfo": "صفحة {current} من {total}",
+      "firstPage": "الذهاب للصفحة الأولى",
+      "lastPage": "الذهاب للصفحة الأخيرة",
+      "nextPage": "الصفحة التالية",
+      "prevPage": "الصفحة السابقة"
+    }
   }
 }

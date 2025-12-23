@@ -21,7 +21,7 @@ export default function LoginForm() {
 
     await authClient.signIn.social({
       provider,
-      callbackURL: "/",
+      callbackURL: "/project",
       fetchOptions: {
         onSuccess: () => {
           toast.success(

@@ -70,7 +70,7 @@ export function ProjectActionsMenu({
       if (res.success) {
         toast.success(t("toast.deleteSuccess"));
         setOpenDelete(false);
-        router.push("/"); // Will trigger the root page logic to redirect to another project
+        router.push("/project"); // Will trigger the root page logic to redirect to another project
       } else {
         toast.error(t("toast.deleteFailed"));
       }

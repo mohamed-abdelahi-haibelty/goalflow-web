@@ -15,7 +15,7 @@ export default async function Login() {
   });
 
   if (session) {
-    redirect("/");
+    redirect("/project");
   }
 
   return (

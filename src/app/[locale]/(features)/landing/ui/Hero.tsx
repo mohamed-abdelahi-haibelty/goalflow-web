@@ -48,8 +48,7 @@ export function HeroSection() {
         {/* hero Text Content */}
         <div className="flex flex-col justify-center max-w-xl mx-auto  text-center">
           {/* A small "hook" badge */}
-          <div className="inline-flex items-center rounded-full text-accent-foreground dark:border bg-accent/70 dark:bg-transparent dark:border-primary/20  px-3 py-1 text-sm font-medium dark:text-primary mb-6 w-fit mx-auto">
-            <span className="flex h-2 w-2 rounded-full bg-accent-foreground dark:bg-primary animate-pulse mr-2"></span>
+          <div className="inline-flex items-center rounded-full text-accent-foreground dark:border  dark:bg-transparent border-none  px-3 py-1 text-sm font-medium dark:text-primary mb-6 w-fit mx-auto">
             The Missing Link Between Planning & Doing
           </div>
 

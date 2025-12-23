@@ -29,7 +29,7 @@ export function Footer() {
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>© 2025 Goalflow Inc.</span>
+            <span>© 2025 Goalflow.</span>
           </div>
         </div>
       </div>

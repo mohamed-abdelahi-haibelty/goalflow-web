@@ -101,7 +101,7 @@ export function Navbar() {
                 <SheetHeader>
                   <SheetTitle className="text-left">Goalflow</SheetTitle>
                 </SheetHeader>
-                <div className="flex flex-col gap-6 mt-10">
+                <div className="flex flex-col gap-6  mx-4">
                   {navLinks.map((link) => (
                     <Link
                       key={link.name}

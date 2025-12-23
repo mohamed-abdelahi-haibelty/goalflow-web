@@ -64,7 +64,7 @@ export function Pricing() {
           {/* 2. Yearly Plan - THE BEST VALUE */}
           <div className="relative p-10 rounded-[2.5rem] bg-card dark:bg-background/50 backdrop-blur-sm border  dark:border-primary/50 flex flex-col text-left  z-20">
             <div className="absolute -top-4 left-1/2 -translate-x-1/2 p-[1px] rounded-full dark:bg-[linear-gradient(to_right,#dd7ddf,#e1cd86,#bbcb92,#71c2ef,#3bffff,#dd7ddf)] shadow-lg">
-              <div className="dark:bg-slate-950 bg-secondary border dark:border-none text-secondary-foreground dark:text-white px-6 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
+              <div className="dark:bg-background bg-secondary border dark:border-none text-secondary-foreground dark:text-white px-6 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                 Most Popular • Save 66%
               </div>
             </div>

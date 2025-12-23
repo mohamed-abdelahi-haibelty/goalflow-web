@@ -43,9 +43,6 @@ function FeatureLoop() {
             }`}
           >
             <div className="flex-1 space-y-6">
-              <div className="h-12 w-12 rounded-lg bg-muted/60 dark:bg-primary/10 flex items-center justify-center dark:text-primary">
-                <feature.icon className="h-6 w-6" />
-              </div>
               <h3 className="text-3xl font-bold tracking-tight">
                 {feature.title}
               </h3>

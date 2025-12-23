@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export function Pricing() {
   return (
-    <section id="pricing" className="py-24 dark:bg-[#020817] overflow-hidden">
+    <section id="pricing" className="py-24 dark:bg-background overflow-hidden">
       <div className="container px-4 mx-auto text-center relative">
         {/* Background Decorative Blurs */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent blur-3xl -z-10" />

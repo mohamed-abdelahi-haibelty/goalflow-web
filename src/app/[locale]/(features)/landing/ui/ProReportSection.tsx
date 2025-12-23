@@ -1,20 +1,6 @@
-"use client";
-import { useTheme } from "next-themes";
 import ReportFeatureGrid from "./ReportFeatureGrid";
-import { useEffect, useState } from "react";
 
 export function ProReportsSection() {
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) return null;
-
-  const reportImage =
-    resolvedTheme === "dark"
-      ? "/images/full-report.png"
-      : "/images/full-report-light.png";
   return (
     <section className="py-24 bg-card border-y border-border relative overflow-hidden">
       {/* Decorative gradient for the Pro section */}
@@ -56,12 +42,19 @@ export function ProReportsSection() {
           ))}
         </div>
 
-        {/* This is where you place the full Reports dashboard screenshot */}
+        {/* Dashboard Screenshots */}
         <div className="mt-16 rounded-2xl border border-border bg-background overflow-hidden shadow-2xl">
+          {/* Light Mode Report */}
           <img
-            src={reportImage}
+            src="/images/full-report-light.png"
             alt="Pro Analytics Dashboard"
-            className="w-full h-auto p-4"
+            className="w-full h-auto p-4 dark:hidden block"
+          />
+          {/* Dark Mode Report */}
+          <img
+            src="/images/full-report.png"
+            alt="Pro Analytics Dashboard"
+            className="w-full h-auto p-4 hidden dark:block"
           />
         </div>
       </div>

@@ -5,35 +5,20 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import underlineImage from "../../../../../../public/images/underline.svg";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
-import { useTheme } from "next-themes";
+import { useRef } from "react";
 import { Link } from "@/i18n/navigation";
 
 export function HeroSection() {
   const appImage = useRef<HTMLDivElement>(null);
 
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
-
   const { scrollYProgress } = useScroll({
-    target: mounted ? appImage : undefined,
+    target: appImage,
     offset: ["start end", "end end"],
   });
 
   const rotateX = useTransform(scrollYProgress, [0, 1], [15, 0]);
   const opacity = useTransform(scrollYProgress, [0, 1], [0.5, 1]);
 
-  if (!mounted) return;
-
-  const timerImage =
-    resolvedTheme === "dark"
-      ? "/images/feature-timer.png"
-      : "/images/feature-timer-light.png";
-
-  const heroImage =
-    resolvedTheme === "dark" ? "/images/hero.png" : "/images/hero-light.png";
   return (
     <section className="relative overflow-hidden pt-12  pb-32 bg-background">
       {/* Subtle background glow effect behind the hero */}
@@ -41,12 +26,23 @@ export function HeroSection() {
 
       <div className="container px-4 mx-auto relative">
         <div className="absolute hidden lg:block">
-          <Image
-            width={300}
-            height={300}
-            src={timerImage}
-            alt=" Pomodoro Timer image"
-          />
+          <div className="dark:hidden block">
+            <Image
+              width={300}
+              height={300}
+              src="/images/feature-timer-light.png"
+              alt="Pomodoro Timer"
+            />
+          </div>
+          {/* Dark Mode Timer */}
+          <div className="hidden dark:block">
+            <Image
+              width={300}
+              height={300}
+              src="/images/feature-timer.png"
+              alt="Pomodoro Timer"
+            />
+          </div>
         </div>
 
         {/* hero Text Content */}
@@ -138,13 +134,23 @@ export function HeroSection() {
 
             {/* The Application Screenshot */}
             <div className="relative  w-full bg-background">
+              {/* Light Mode Hero */}
               <Image
-                src={heroImage}
-                alt="Goalflow Project Board Interface showing kanban columns and tasks"
+                src="/images/hero-light.png"
+                alt="Goalflow Interface Light"
                 width={1920}
                 height={1080}
-                className="object-cover object-top"
-                priority
+                className="object-cover object-top dark:hidden block"
+                priority // Important for Hero LCP
+              />
+              {/* Dark Mode Hero */}
+              <Image
+                src="/images/hero.png"
+                alt="Goalflow Interface Dark"
+                width={1920}
+                height={1080}
+                className="object-cover object-top hidden dark:block"
+                priority // Important for Hero LCP
               />
             </div>
           </motion.div>

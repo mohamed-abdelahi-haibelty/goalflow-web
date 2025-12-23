@@ -73,9 +73,11 @@ export function HeroSection() {
           </h1>
 
           <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-            Most apps just let you list your tasks. <strong>Goalflow </strong>
-            helps you actually finish them. The all-in-one workspace combining
-            visual project management with deep-focus timers.
+            We built <strong>Goalflow</strong> because jumping between{" "}
+            <strong>three different apps</strong> just to finish one task isn't
+            productive—it's exhausting. We put your project board and your focus
+            timer in one place, so when you’re ready to work, you can just...
+            work.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center  mb-8">

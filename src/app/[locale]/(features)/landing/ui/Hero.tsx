@@ -49,14 +49,16 @@ export function HeroSection() {
         <div className="flex flex-col justify-center max-w-xl mx-auto  text-center">
           {/* A small "hook" badge */}
           <div className="inline-flex items-center rounded-full text-accent-foreground dark:border  dark:bg-transparent border-none  px-3 py-1 text-sm font-medium dark:text-primary mb-6 w-fit mx-auto">
-            The Missing Link Between Planning & Doing
+            Finally, a project board that actually tracks the time you spend
+            working.
           </div>
 
           <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl mb-6">
-            Stop Planning. <br className="hidden sm:inline" />
+            Plan in minutes.
+            <br className="hidden sm:inline" />
             <span className="relative">
               <span className="text-transparent bg-clip-text bg-primary">
-                Start Flowing.
+                Focus for hours.
               </span>
               <span
                 className="absolute w-full h-4 left-0 top-full -translate-y-1/2 bg-[linear-gradient(to_right,#FBBF24,#2DD4BF,#8B5CF6,#D946EF)]"

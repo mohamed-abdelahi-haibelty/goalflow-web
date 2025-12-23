@@ -24,32 +24,18 @@ const navLinks = [
 export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <svg
-            width="32"
-            height="32"
-            viewBox="0 0 48 48"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="transition-transform group-hover:scale-110"
-          >
-            <path
-              d="M34.5 16.5C33.5 13.5 31 11 27.5 10C22.5 8.5 17 11.5 15.5 16.5C14 21.5 17 27 22 28.5C25.5 29.5 29 28.5 31.5 26L40 34.5L46 22"
-              stroke="var(--primary)"
-              strokeWidth="4.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-xl font-bold tracking-tight text-foreground">
-            Goalflow
-          </span>
-        </Link>
+      <div className="container mx-auto flex h-16 items-center px-4 md:grid md:grid-cols-3">
+        <div className="flex-1 md:flex-none md:justify-self-start">
+          {/* Logo Section */}
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="text-xl font-bold tracking-tight text-foreground">
+              Goalflow
+            </span>
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden md:flex items-center gap-8 justify-self-center">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -57,17 +43,12 @@ export function Navbar() {
               className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary flex items-center gap-1.5"
             >
               {link.name}
-              {link.isPro && (
-                <span className="rounded-full bg-accent/50 dark:bg-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground dark:text-primary border border-accent/20 dark:border-primary/20">
-                  Pro
-                </span>
-              )}
             </Link>
           ))}
         </nav>
 
         {/* Action Area */}
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex flex-1 items-center justify-end gap-2 md:flex-none md:justify-self-end">
           <GlobeLanguageSwitcher />
 
           <ModeToggle />

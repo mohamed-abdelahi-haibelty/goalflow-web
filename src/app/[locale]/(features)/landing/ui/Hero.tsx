@@ -25,26 +25,6 @@ export function HeroSection() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/20 blur-[100px] -z-10 rounded-full pointer-events-none" />
 
       <div className="container px-4 mx-auto relative">
-        <div className="absolute hidden lg:block">
-          <div className="dark:hidden block">
-            <Image
-              width={300}
-              height={300}
-              src="/images/feature-timer-light.png"
-              alt="Pomodoro Timer"
-            />
-          </div>
-          {/* Dark Mode Timer */}
-          <div className="hidden dark:block">
-            <Image
-              width={300}
-              height={300}
-              src="/images/feature-timer.png"
-              alt="Pomodoro Timer"
-            />
-          </div>
-        </div>
-
         {/* hero Text Content */}
         <div className="flex flex-col justify-center max-w-xl mx-auto  text-center">
           {/* A small "hook" badge */}
@@ -55,7 +35,7 @@ export function HeroSection() {
 
           <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl md:text-6xl mb-6">
             Plan in minutes.
-            <br className="hidden sm:inline" />
+            <br className="inline" />
             <span className="relative">
               <span className="text-transparent bg-clip-text bg-primary">
                 Focus for hours.

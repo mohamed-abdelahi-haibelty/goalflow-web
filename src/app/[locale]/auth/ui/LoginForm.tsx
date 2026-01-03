@@ -44,7 +44,7 @@ export default function LoginForm() {
   }
 
   return (
-    <Card className="bg-card min-w-[470px] shadow-xl p-8 mb-6 rounded-3xl">
+    <Card className="bg-card md:min-w-[470px] shadow-xl p-8 mb-6 rounded-3xl">
       <div className="space-y-6">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground mb-2">

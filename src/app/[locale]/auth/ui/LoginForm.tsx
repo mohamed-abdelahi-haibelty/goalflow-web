@@ -7,8 +7,11 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
+  const searchParams = useSearchParams();
+  const callbackURL = searchParams.get("callbackURL") || "/project"; // Default fallback
   const [googleLoading, setGoogleLoading] = useState(false);
   const [githubLoading, setGithubLoading] = useState(false);
   const t = useTranslations("loginForm");
@@ -21,7 +24,7 @@ export default function LoginForm() {
 
     await authClient.signIn.social({
       provider,
-      callbackURL: "/project",
+      callbackURL: callbackURL,
       fetchOptions: {
         onSuccess: () => {
           toast.success(

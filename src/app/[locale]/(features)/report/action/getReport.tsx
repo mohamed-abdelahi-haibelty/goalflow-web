@@ -4,13 +4,7 @@ import { getUserSession } from "@/actions/auth/getUserSession";
 import db from "@/lib/db";
 import { ActionsResponse } from "@/types";
 import { DateFilter, ProjectReport } from "../types/report";
-import {
-  startOfDay,
-  startOfMonth,
-  startOfWeek,
-  subDays,
-  format,
-} from "date-fns";
+import { startOfDay, startOfMonth, startOfWeek, format } from "date-fns";
 import { toDate, fromZonedTime } from "date-fns-tz";
 
 export interface HeatmapData {
@@ -30,9 +24,11 @@ export interface ReportDataPayload {
   chartData: ChartData[];
 }
 
+// 1. Add 'year' to the params interface
 interface GetReportsParams {
   dateFilter?: DateFilter;
   timezone?: string;
+  year?: number;
 }
 
 export async function getReports(
@@ -45,10 +41,12 @@ export async function getReports(
   }
 
   try {
-    const { dateFilter, timezone = "UTC" } = params || {};
+    // Default to current year if not provided
+    const { dateFilter, timezone = "UTC", year = new Date().getFullYear() } =
+      params || {};
     const userNow = toDate(new Date(), { timeZone: timezone });
 
-    // 1. Calculate Table Filter Date
+    // --- Table Filter Logic (Remains unchanged) ---
     let startDate: Date | undefined;
     if (dateFilter === "today") {
       startDate = fromZonedTime(startOfDay(userNow), timezone);
@@ -61,7 +59,7 @@ export async function getReports(
       startDate = fromZonedTime(startOfMonth(userNow), timezone);
     }
 
-    // 2. Fetch Projects (Table & Comparison Chart)
+    // --- Fetch Projects (Table & Chart) ---
     const projects = await db.project.findMany({
       where: { ownerId: session.user.id },
       include: {
@@ -96,21 +94,29 @@ export async function getReports(
       };
     });
 
-    // 3. Chart Data
+    // --- Chart Data ---
     const chartData = tableData
       .map((p) => ({ name: p.projectName, duration: p.totalHours }))
       .sort((a, b) => b.duration - a.duration)
       .slice(0, 5);
 
-    // 4. Fetch Heatmap Data (Last 365 Days)
-    // We go back 365 days to ensure a full year view
-    const oneYearAgoLocal = subDays(startOfDay(userNow), 365);
-    const oneYearAgoUtc = fromZonedTime(oneYearAgoLocal, timezone);
+    // --- 2. Fetch Heatmap Data (Specific Year) ---
 
-    const recentSessions = await db.pomodoroSession.findMany({
+    // Create Date objects for Jan 1 and Dec 31 of the selected year
+    // We create them as strings first to avoid local timezone shifts, then convert to zoned time
+    const startOfYearLocal = new Date(`${year}-01-01T00:00:00`);
+    const endOfYearLocal = new Date(`${year}-12-31T23:59:59`);
+
+    const startQueryDate = fromZonedTime(startOfYearLocal, timezone);
+    const endQueryDate = fromZonedTime(endOfYearLocal, timezone);
+
+    const yearSessions = await db.pomodoroSession.findMany({
       where: {
         userId: session.user.id,
-        completedAt: { gte: oneYearAgoUtc },
+        completedAt: {
+          gte: startQueryDate,
+          lte: endQueryDate,
+        },
       },
       select: {
         completedAt: true,
@@ -120,7 +126,7 @@ export async function getReports(
 
     const heatmapMap = new Map<string, { count: number; duration: number }>();
 
-    recentSessions.forEach((session) => {
+    yearSessions.forEach((session) => {
       const zonedDate = toDate(session.completedAt, { timeZone: timezone });
       const dateKey = format(zonedDate, "yyyy-MM-dd");
 

@@ -40,7 +40,7 @@ export function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary flex items-center gap-1.5"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-red-400 dark:hover:text-secondary flex items-center gap-1.5"
             >
               {link.name}
             </Link>
@@ -62,7 +62,7 @@ export function Navbar() {
 
           <Button
             asChild
-            className="hidden sm:flex bg-primary text-primary-foreground hover:opacity-90 font-semibold shadow-sm rounded-[var(--radius)]"
+            className="hidden sm:flex bg-secondary text-secondary-foreground hover:opacity-90 font-semibold shadow-sm rounded-[var(--radius)]"
           >
             <Link href="/auth">Start for Free</Link>
           </Button>
@@ -99,7 +99,7 @@ export function Navbar() {
                   >
                     Log In
                   </Link>
-                  <Button className="w-full bg-primary text-primary-foreground h-12 text-lg">
+                  <Button className="w-full bg-secondary text-primary-foreground h-12 text-lg">
                     Start for Free
                   </Button>
                 </div>

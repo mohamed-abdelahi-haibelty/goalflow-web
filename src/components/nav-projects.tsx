@@ -1,6 +1,6 @@
 "use client";
 
-import { Folder, MoreHorizontal, Plus } from "lucide-react";
+import { Folder, MoreHorizontal, Plus, Sparkles } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,9 +22,21 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useRef, useState } from "react";
 import CreateProjectModal from "@/app/[locale]/(features)/project/ui/CreateProjectModal";
 import { useTranslations } from "next-intl";
+import { UpgradeModal } from "@/app/[locale]/(features)/billing/ui/UpgradeModal";
 
-export function NavProjects({ projects }: { projects: Project[] }) {
+export function NavProjects({
+  projects,
+  isPro,
+  userId,
+  userEmail,
+}: {
+  projects: Project[];
+  isPro: boolean;
+  userId: string;
+  userEmail: string;
+}) {
   const t = useTranslations("nav.projects");
+  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -113,16 +125,9 @@ export function NavProjects({ projects }: { projects: Project[] }) {
               <SidebarMenuButton
                 asChild
                 isActive={item.id === activeId} // Visual Indicator
-                className="data-[active=true]:bg-sidebar-accent data-[active=true]:text-shadow-sidebar-accent-foreground dark:data-[active=true]:bg-primary/5 data-[active=true]:font-medium dark:data-[active=true]:text-primary"
               >
                 <Link href={`/project/${item.id}`}>
-                  <Folder
-                    className={
-                      item.id === activeId
-                        ? " fill-sidebar-accent/20 text-sidebar-accent-foreground dark:fill-primary/20 dark:text-primary"
-                        : ""
-                    }
-                  />
+                  <Folder />
                   <span>{item.name}</span>
                 </Link>
               </SidebarMenuButton>
@@ -172,6 +177,17 @@ export function NavProjects({ projects }: { projects: Project[] }) {
       <CreateProjectModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
+        currentProjectCount={projects.length}
+        isPro={isPro}
+        userId={userId}
+        userEmail={userEmail}
+      />
+
+      <UpgradeModal
+        isOpen={isUpgradeOpen}
+        onClose={() => setIsUpgradeOpen(false)}
+        userId={userId}
+        userEmail={userEmail}
       />
     </>
   );

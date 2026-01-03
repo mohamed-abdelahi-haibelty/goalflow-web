@@ -20,6 +20,12 @@ importers:
       '@neondatabase/serverless':
         specifier: ^1.0.2
         version: 1.0.2
+      '@paddle/paddle-js':
+        specifier: ^1.6.1
+        version: 1.6.1
+      '@paddle/paddle-node-sdk':
+        specifier: ^3.5.0
+        version: 3.5.0
       '@prisma/adapter-neon':
         specifier: ^7.0.1
         version: 7.0.1
@@ -653,6 +659,13 @@ packages:
   '@nolyfill/is-core-module@1.0.39':
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
+
+  '@paddle/paddle-js@1.6.1':
+    resolution: {integrity: sha512-Yh6i99Wz22EcJ0KyZfTxzzDHduet3fpKmqEKSmZlHxlgIXDyBjkzdGNWw3/yR7Esdvr6HuLu3WfDTod5lC0alw==}
+
+  '@paddle/paddle-node-sdk@3.5.0':
+    resolution: {integrity: sha512-/Ac1N5i01/YJhiqOKlfW+Rz+nfhkaCyqpkG2P5ByeUNERNFYbAOkNc/TaXO/Nhgf9r3PoatnXH6YSpEs4KdtjA==}
+    engines: {node: '>=20'}
 
   '@prisma/adapter-neon@7.0.1':
     resolution: {integrity: sha512-z7JODDjl/wR9tED7s5etrXZI+la+LjwvMoJSs4Pm+P/mW8d1OLATdftCmoIca3MjYr/PG1X+2oXt7iM1zke3Tg==}
@@ -3924,6 +3937,10 @@ snapshots:
       fastq: 1.19.1
 
   '@nolyfill/is-core-module@1.0.39': {}
+
+  '@paddle/paddle-js@1.6.1': {}
+
+  '@paddle/paddle-node-sdk@3.5.0': {}
 
   '@prisma/adapter-neon@7.0.1':
     dependencies:

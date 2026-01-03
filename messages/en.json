@@ -179,6 +179,12 @@
       "taskCount": "Total Tasks",
       "completedTasks": "Completed Tasks"
     },
+    "upgrade": {
+      "previewTitle": "Insights Preview",
+      "descriptionShort": "This is a live sample of how your analytics will look. Upgrade to Pro to sync your real time-logs and project data.",
+      "cta": "Unlock My Reports",
+      "footerText": "Ready to see your own data?"
+    },
     "filters": {
       "allTime": "All Time",
       "today": "Today",

@@ -19,20 +19,33 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { CreateProjectInput, createProjectSchema } from "../types/project";
 import { Input } from "@/components/ui/input";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { createProject } from "../action/createProject";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
+import { UpgradeModal } from "../../billing/ui/UpgradeModal";
 
 interface CreateProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  currentProjectCount: number;
+  isPro: boolean;
+  userId: string;
+  userEmail: string;
 }
 
-function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
+function CreateProjectModal({
+  isOpen,
+  onClose,
+  isPro,
+  currentProjectCount,
+  userEmail,
+  userId,
+}: CreateProjectModalProps) {
   const t = useTranslations("project.create");
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const [isPending, startTransition] = useTransition();
   const form = useForm<CreateProjectInput>({
     resolver: zodResolver(createProjectSchema),
@@ -43,6 +56,11 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
   const router = useRouter();
 
   const onSubmit = (values: CreateProjectInput) => {
+    // LOGIC: If free and has 2 or more projects, stop and show upgrade
+    if (!isPro && currentProjectCount >= 2) {
+      setShowUpgrade(true);
+      return;
+    }
     startTransition(async () => {
       const res = await createProject(values);
 
@@ -75,6 +93,21 @@ function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
       }
     });
   };
+
+  // If upgrade triggered, show that modal instead or on top
+  if (showUpgrade) {
+    return (
+      <UpgradeModal
+        isOpen={true}
+        onClose={() => {
+          setShowUpgrade(false);
+          onClose(); // Close the create modal too
+        }}
+        userId={userId}
+        userEmail={userEmail}
+      />
+    );
+  }
 
   if (!isOpen) return null;
 

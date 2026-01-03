@@ -13,17 +13,17 @@ export function Footer() {
           <div className="flex gap-8 text-sm font-medium text-muted-foreground">
             <a
               href="#features"
-              className="hover:text-primary transition-colors"
+              className="hover:text-red-400 transition-colors"
             >
               Features
             </a>
-            <a href="#pricing" className="hover:text-primary transition-colors">
+            <a href="#pricing" className="hover:text-red-400 transition-colors">
               Pricing
             </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            <a href="#" className="hover:text-red-400 transition-colors">
               Privacy
             </a>
-            <a href="#" className="hover:text-primary transition-colors">
+            <a href="#" className="hover:text-red-400 transition-colors">
               Terms
             </a>
           </div>

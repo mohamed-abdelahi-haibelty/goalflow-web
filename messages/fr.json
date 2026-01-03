@@ -179,6 +179,12 @@
       "taskCount": "Tâches Totales",
       "completedTasks": "Tâches Terminées"
     },
+    "upgrade": {
+      "title": "Débloquez les Statistiques Avancées",
+      "description": "Visualisez votre productivité avec des cartes thermiques annuelles et des comparaisons de projets. Passez à Pro pour voir vos vraies données.",
+      "cta": "Passer à la version Pro",
+      "guarantee": "Annulez à tout moment. Satisfait ou remboursé."
+    },
     "filters": {
       "allTime": "Tout le Temps",
       "today": "Aujourd'hui",

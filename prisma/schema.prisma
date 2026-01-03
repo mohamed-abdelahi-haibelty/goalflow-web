@@ -16,11 +16,23 @@ model User {
   image         String?
   role          Role        @default(USER) 
 
-  // 🔥 Streak fields (safe)
+  // Subscription Summary (For fast frontend checks)
+  plan             Plan          @default(FREE)
+    // Paddle Customer ID (Stored to prevent creating duplicate customers in Paddle)
+  paddleCustomerId String?       @unique
+
+   // Link to detailed subscription data
+  subscription     Subscription?
+
+
+  transactions Transaction[]
+
+  //Streak fields 
   streakCount           Int            @default(0)
   longestStreak         Int            @default(0)
   lastStreakUpgradeDate DateTime?
   streakStatus          StreakStatus   @default(UNINITIATED)
+
 
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -33,6 +45,49 @@ model User {
 
   @@unique([email])
   @@map("user")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Paddle Identifiers
+  paddleSubscriptionId String             @unique // The 'sub_xxx' ID from Paddle
+  paddlePriceId        String             // The 'pri_xxx' ID. This tracks if they are 'Early Bird' or 'Standard'
+  paddleProductId      String             //  The 'pro_xxx' ID
+
+
+  // Status & Billing
+  status               SubscriptionStatus 
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime           // Crucial for "Pro until X date" logic
+  cancelAtPeriodEnd    Boolean            @default(false) // If true, UI shows "Cancels on [Date]"
+
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@map("subscriptions")
+}
+
+model Transaction {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  paddleTransactionId String @unique // 'trn_xxx' from Paddle
+  paddleSubscriptionId String?        // Link to the sub it belongs to
+  paddleProductId      String             // Helps with financial reporting
+  
+  amount           Int      // Store in cents/smallest unit (e.g., 199 for $1.99)
+  currency         String   // e.g., "USD", "EUR"
+  status           TransactionStatus
+  
+  receiptUrl       String?  // Link to the Paddle PDF receipt
+  createdAt        DateTime @default(now())
+
+  @@index([userId])
+  @@map("transactions")
 }
 
 model Session {
@@ -92,10 +147,12 @@ model Project {
   pomodoroSessions  PomodoroSession[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  isLocked      Boolean      @default(false) // for former Pro users
+  // Locking Logic for Downgrades
+  // Logic: If User.plan == FREE and Project count > 2, this is set to true for the newest projects.
+  isLocked      Boolean      @default(false)
 
   @@index([ownerId])
-  @@index([ownerId, createdAt])  // To find oldest 3 projects for locking logic
+  @@index([ownerId, createdAt])
   @@map("projects")
 }
 
@@ -196,11 +253,19 @@ enum Role {
   ADMIN
 }
 
+// We only care if they are FREE or PRO. 
+// The frequency (Monthly/Yearly) is derived from the Subscription model.
 enum Plan {
   FREE
-  PRO_MONTHLY
-  PRO_YEARLY
+  PRO
   LIFETIME
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE  // Paddle tried to charge but failed, usually enters a retry logic
+  CANCELED  // User canceled explicitly
+  TRIALING
 }
 
 enum Mode {
@@ -218,6 +283,13 @@ enum TimerStatus {
 enum StreakStatus {
   UNINITIATED
   STARTED
+}
+
+enum TransactionStatus {
+  COMPLETED
+  PENDING
+  FAILED
+  REFUNDED
 }
 
 

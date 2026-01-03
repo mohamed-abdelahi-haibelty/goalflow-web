@@ -63,7 +63,7 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-center  mb-8">
             <Button
               size="lg"
-              className="h-12 px-8 bg-primary text-lg font-semibold group text-primary-foreground hover:opacity-90 rounded-[var(--radius)] shadow-md"
+              className="h-12 px-8 bg-secondary text-lg font-semibold group text-secondary-foreground hover:opacity-90 rounded-[var(--radius)] shadow-md"
             >
               <Link href="/auth">Get Started for Free</Link>
               <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
@@ -74,18 +74,10 @@ export function HeroSection() {
           </div>
 
           {/* Quick Social Proof/Key Benefits */}
-          <div className="flex flex-wrap items-center justify-center  gap-x-6 gap-y-2 text-sm font-medium text-muted-foreground">
-            <span className="flex items-center">
-              <CheckCircle2 className="h-4 w-4 text-primary mr-2" /> Visualize
-              Work
-            </span>
-            <span className="flex items-center">
-              <CheckCircle2 className="h-4 w-4 text-primary mr-2" /> Focus Timer
-            </span>
-            <span className="flex items-center">
-              <CheckCircle2 className="h-4 w-4 text-primary mr-2" /> Track
-              Progress
-            </span>
+          <div className="flex flex-wrap items-center  justify-center  gap-x-6 gap-y-2 text-sm font-medium text-muted-foreground">
+            <span className="flex items-center">Visualize Work</span>
+            <span className="flex items-center">Focus Timer</span>
+            <span className="flex items-center">Track Progress</span>
           </div>
         </div>
 

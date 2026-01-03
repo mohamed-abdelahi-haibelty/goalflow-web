@@ -8,6 +8,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import {
   subDays,
@@ -18,8 +25,14 @@ import {
   isSameMonth,
   getDay,
   subWeeks,
+  getYear,
+  startOfYear,
+  endOfYear,
 } from "date-fns";
 import { HeatmapData } from "../action/getReport";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
+import { useMemo } from "react";
 
 interface ActivityHeatmapProps {
   data: HeatmapData[];
@@ -27,30 +40,73 @@ interface ActivityHeatmapProps {
 
 export function ActivityHeatmap({ data }: ActivityHeatmapProps) {
   const t = useTranslations("report.heatmap");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // 1. Generate Calendar Grid (Last ~52 weeks)
-  const today = new Date();
-  // Start 52 weeks ago, aligned to the start of that week (Sunday/Monday depending on locale preference, defaulting to Sunday here for GitHub style)
-  const startDate = startOfWeek(subWeeks(today, 52));
-  const endDate = today;
+  // 1. Determine Selected Year
+  const currentYear = new Date().getFullYear();
+  // Try to get year from URL, fallback to current year
+  const selectedYear = Number(searchParams.get("year")) || currentYear;
 
-  const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+  // Generate list of years for the dropdown (e.g., from 2024 up to current year)
+  // You might want to pass 'availableYears' as a prop in the future,
+  // but for now we can generate a simple range or hardcode current + prev.
+  const years = Array.from({ length: 2 }, (_, i) => currentYear - i); // [2026, 2025, 2024]
 
-  // Group days into weeks [ [Sun, Mon...], [Sun, Mon...] ]
-  const weeks: Date[][] = [];
-  let currentWeek: Date[] = [];
+  // 2. Generate Calendar Grid for the Selected Year
+  const { weeks, monthLabels } = useMemo(() => {
+    // Create a date object for Jan 1st of selected year
+    const yearStart = startOfYear(new Date(selectedYear, 0, 1));
+    const yearEnd = endOfYear(new Date(selectedYear, 0, 1));
 
-  allDays.forEach((day) => {
-    currentWeek.push(day);
-    if (currentWeek.length === 7) {
-      weeks.push(currentWeek);
-      currentWeek = [];
+    // Align grid to full weeks (Sun-Sat or Mon-Sun depending on locale default)
+    const startDate = startOfWeek(yearStart);
+    const endDate = endOfWeek(yearEnd);
+
+    const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+
+    // Group days into weeks
+    const weeksArr: Date[][] = [];
+    let currentWeek: Date[] = [];
+
+    allDays.forEach((day) => {
+      currentWeek.push(day);
+      if (currentWeek.length === 7) {
+        weeksArr.push(currentWeek);
+        currentWeek = [];
+      }
+    });
+    if (currentWeek.length > 0) {
+      weeksArr.push(currentWeek);
     }
-  });
-  // Push remaining partial week
-  if (currentWeek.length > 0) {
-    weeks.push(currentWeek);
-  }
+
+    // Generate Month Labels
+    const labels: { label: string; weekIndex: number }[] = [];
+    weeksArr.forEach((week, index) => {
+      const firstDay = week[0];
+      // Logic: If it's the first week OR the month changed compared to previous week's first day
+      // AND the first day is actually within the selected year (avoids Dec label appearing at start of grid)
+      const isNewMonth =
+        index === 0 || !isSameMonth(firstDay, weeksArr[index - 1][0]);
+
+      if (isNewMonth && getYear(firstDay) === selectedYear) {
+        labels.push({
+          label: format(firstDay, "MMM"),
+          weekIndex: index,
+        });
+      }
+    });
+
+    return { weeks: weeksArr, monthLabels: labels };
+  }, [selectedYear]);
+
+  // 3. Handle Year Change
+  const handleYearChange = (newYear: string) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("year", newYear);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   // Helper: Format tooltip time
   const formatTooltipTime = (seconds: number) => {
@@ -71,24 +127,31 @@ export function ActivityHeatmap({ data }: ActivityHeatmapProps) {
     return "bg-primary";
   };
 
-  // Generate Month Labels
-  const monthLabels: { label: string; weekIndex: number }[] = [];
-  weeks.forEach((week, index) => {
-    const firstDay = week[0];
-    // If it's the first week or the month changed from the previous week's first day
-    if (index === 0 || !isSameMonth(firstDay, weeks[index - 1][0])) {
-      monthLabels.push({
-        label: format(firstDay, "MMM"),
-        weekIndex: index,
-      });
-    }
-  });
-
   return (
     <div className="flex flex-col gap-4 w-full overflow-hidden">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-foreground">{t("title")}</h3>
-        <span className="text-xs text-muted-foreground">{t("lastYear")}</span>
+        {/* <span className="text-xs text-muted-foreground">{t("lastYear")}</span> */}
+        {/* Year Switcher */}
+        <Select
+          value={selectedYear.toString()}
+          onValueChange={handleYearChange}
+        >
+          <SelectTrigger className="text-xs bg-transparent border-border text-muted-foreground">
+            <SelectValue placeholder={selectedYear} />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((year) => (
+              <SelectItem
+                key={year}
+                value={year.toString()}
+                className="text-xs"
+              >
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Scrollable Container for the Grid */}
@@ -132,12 +195,19 @@ export function ActivityHeatmap({ data }: ActivityHeatmapProps) {
                         duration: 0,
                       };
 
+                      // Hide days that are part of the week grid but not in the selected year
+                      // (optional style choice, keeps the grid looking clean)
+                      const isDayInYear = getYear(day) === selectedYear;
+
                       return (
                         <Tooltip key={dateKey}>
                           <TooltipTrigger asChild>
                             <div
                               className={cn(
-                                "h-3 w-3 rounded-sm duration-150   transition-colors hover:ring-1 hover:ring-ring hover:ring-offset-1 hover:ring-offset-background",
+                                "h-3 w-3 rounded-sm duration-150",
+                                !isDayInYear && "opacity-20", // Dim days outside selected year
+                                isDayInYear &&
+                                  "hover:ring-1 hover:ring-ring hover:ring-offset-1 hover:ring-offset-background",
                                 getColor(dayData.duration)
                               )}
                             />

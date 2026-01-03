@@ -2,6 +2,7 @@
 
 import db from "@/lib/db";
 import { getUserSession } from "@/actions/auth/getUserSession";
+import { revalidatePath } from "next/cache";
 
 export async function deleteProject(projectId: string) {
   const session = await getUserSession();
@@ -31,6 +32,8 @@ export async function deleteProject(projectId: string) {
         ownerId: session.user.id, // Ensure ownership
       },
     });
+
+    revalidatePath(`/project/`);
 
     return { success: true, message: "Project deleted" };
   } catch (error) {

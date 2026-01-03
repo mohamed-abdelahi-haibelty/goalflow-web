@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { Calendar, CalendarDays, Clock } from "lucide-react";
+import {
+  ArrowRight,
+  Calendar,
+  CalendarDays,
+  Clock,
+  Lock,
+  Sparkles,
+} from "lucide-react";
 import { toast } from "sonner";
 import { DateFilter, ProjectReport } from "../types/report";
 import { useReportColumns } from "./ReportColumns";
@@ -13,8 +20,21 @@ import { cn } from "@/lib/utils";
 import { ActivityHeatmap } from "./ActivityHeatmap";
 import { ProjectComparisonChart } from "./ProjectComparisonChart";
 import { getReports } from "../action/getReport";
+import {
+  demoChartData,
+  demoTableData,
+  getDemoHeatmapData,
+} from "../data/demoData";
+import { UpgradeModal } from "../../billing/ui/UpgradeModal";
+import { useSearchParams } from "next/navigation";
 
-export function ReportTable() {
+interface ReportTableProps {
+  isPro: boolean;
+  userId: string;
+  userEmail: string;
+}
+
+export function ReportTable({ isPro, userId, userEmail }: ReportTableProps) {
   const t = useTranslations("report");
   const [data, setData] = useState<ProjectReport[]>([]);
   const [heatmapData, setHeatmapData] = useState<any[]>([]);
@@ -24,7 +44,25 @@ export function ReportTable() {
   const [dateFilter, setDateFilter] = useState<DateFilter | undefined>();
   const columns = useReportColumns();
 
+  const [isUpgradeModalOpen, setIsUpgradeModalOpen] = useState(false);
+
+  // 2. Get the year from URL
+  const searchParams = useSearchParams();
+  const yearParam = searchParams.get("year");
+  const selectedYear = yearParam
+    ? parseInt(yearParam)
+    : new Date().getFullYear();
+
   const fetchReports = async (filter?: DateFilter) => {
+    // OPTION 1 LOGIC: If not Pro, load fake data and stop loading
+    if (!isPro) {
+      setData(demoTableData);
+      setHeatmapData(getDemoHeatmapData(selectedYear));
+      setChartData(demoChartData);
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -32,6 +70,7 @@ export function ReportTable() {
       const response = await getReports({
         dateFilter: filter,
         timezone,
+        year: selectedYear, // 3. Pass the year to the server action
       });
 
       if (response.success && response.data) {
@@ -51,9 +90,10 @@ export function ReportTable() {
 
   useEffect(() => {
     fetchReports(dateFilter);
-  }, [dateFilter]);
+  }, [dateFilter, isPro]);
 
   const handleFilterChange = (filter: DateFilter | undefined) => {
+    if (!isPro) return; // Disable filters in demo mode
     setDateFilter(filter);
   };
 
@@ -66,74 +106,122 @@ export function ReportTable() {
   }
 
   return (
-    <div className="space-y-8">
-      {/* Top Section: Heatmap & Charts */}
-      <div className="grid grid-cols-1  gap-8">
-        <div className="space-y-4 lg:mx-auto">
-          {/* Heatmap Section */}
-          <div className="p-4 rounded-xl bg-card">
-            <ActivityHeatmap data={heatmapData} />
+    <div className="relative">
+      <UpgradeModal
+        isOpen={isUpgradeModalOpen}
+        onClose={() => setIsUpgradeModalOpen(false)}
+        userId={userId}
+        userEmail={userEmail}
+      />
+      {!isPro && (
+        <div className="mb-8 p-2 px-4 rounded-xl bg-card/40 border dark:border-2 border-dashed dark:border-primary/20 dark:bg-primary/2 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="space-y-1 flex-1">
+              <h3 className="text-lg font-bold flex items-center gap-2">
+                {t("upgrade.previewTitle")}
+                <span className="text-[10px] bg-muted/30 dark:bg-primary/10 text-muted-foreground dark:text-primary px-2 py-0.5 rounded-full uppercase tracking-tighter">
+                  Demo
+                </span>
+              </h3>
+              <p className="text-muted-foreground text-sm ">
+                {t("upgrade.descriptionShort")}
+              </p>
+            </div>
+          </div>
+
+          <Button
+            onClick={() => setIsUpgradeModalOpen(true)}
+            className="shrink-0 gap-2 "
+            variant={"ghost"}
+          >
+            {t("upgrade.cta")}
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
+      )}
+
+      {/* MAIN CONTENT 
+        We add 'pointer-events-none select-none' if not Pro to prevent interaction 
+        with the underlying demo components
+      */}
+
+      <div
+        className={cn(
+          "space-y-8 transition-opacity duration-500",
+          !isPro && " pointer-events-none select-none"
+        )}
+      >
+        {/* Top Section: Heatmap & Charts */}
+        <div className="grid grid-cols-1  gap-8">
+          <div className="space-y-4 lg:mx-auto">
+            {/* Heatmap Section */}
+            <div className="p-4 rounded-xl bg-card">
+              <ActivityHeatmap data={heatmapData} />
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="h-px bg-border  my-6" />
+        <div className="h-px bg-border  my-6" />
 
-      {/* Filter Controls */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h2 className="text-xl font-bold">{t("detailsTitle")}</h2>
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              variant={dateFilter === undefined ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleFilterChange(undefined)}
-              className={cn("gap-2", dateFilter === undefined ? "" : "bg-card")}
-            >
-              <Calendar className="size-4" />
-              {t("filters.allTime")}
-            </Button>
-            <Button
-              variant={dateFilter === "today" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleFilterChange("today")}
-              className={cn("gap-2", dateFilter === "today" ? "" : "bg-card")}
-            >
-              <Clock className="size-4" />
-              {t("filters.today")}
-            </Button>
-            <Button
-              variant={dateFilter === "week" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleFilterChange("week")}
-              className={cn("gap-2", dateFilter === "week" ? "" : "bg-card")}
-            >
-              <CalendarDays className="size-4" />
-              {t("filters.thisWeek")}
-            </Button>
-            <Button
-              variant={dateFilter === "month" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleFilterChange("month")}
-              className={cn("gap-2", dateFilter === "month" ? "" : "bg-card")}
-            >
-              <Calendar className="size-4" />
-              {t("filters.thisMonth")}
-            </Button>
+        {/* Filter Controls */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <h2 className="text-xl font-bold">{t("detailsTitle")}</h2>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant={dateFilter === undefined ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleFilterChange(undefined)}
+                className={cn(
+                  "gap-2",
+                  dateFilter === undefined ? "" : "bg-card"
+                )}
+              >
+                <Calendar className="size-4" />
+                {t("filters.allTime")}
+              </Button>
+              <Button
+                variant={dateFilter === "today" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleFilterChange("today")}
+                className={cn("gap-2", dateFilter === "today" ? "" : "bg-card")}
+              >
+                <Clock className="size-4" />
+                {t("filters.today")}
+              </Button>
+              <Button
+                variant={dateFilter === "week" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleFilterChange("week")}
+                className={cn("gap-2", dateFilter === "week" ? "" : "bg-card")}
+              >
+                <CalendarDays className="size-4" />
+                {t("filters.thisWeek")}
+              </Button>
+              <Button
+                variant={dateFilter === "month" ? "default" : "outline"}
+                size="sm"
+                onClick={() => handleFilterChange("month")}
+                className={cn("gap-2", dateFilter === "month" ? "" : "bg-card")}
+              >
+                <Calendar className="size-4" />
+                {t("filters.thisMonth")}
+              </Button>
+            </div>
           </div>
+
+          {/* Data Table */}
+          <DataTable<ProjectReport, any>
+            columns={columns}
+            data={data}
+            searchColumns={["projectName"]}
+            searchPlaceholder={t("searchPlaceholder")}
+          />
         </div>
 
-        {/* Data Table */}
-        <DataTable<ProjectReport, any>
-          columns={columns}
-          data={data}
-          searchColumns={["projectName"]}
-          searchPlaceholder={t("searchPlaceholder")}
-        />
+        {/* Project Comparison Chart */}
+        <ProjectComparisonChart data={chartData} />
       </div>
-
-      {/* Project Comparison Chart */}
-      <ProjectComparisonChart data={chartData} />
     </div>
   );
 }

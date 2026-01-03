@@ -1,6 +1,47 @@
+"use client";
 import { Button } from "@/components/ui/button";
+import { usePaddle } from "../../paddle/hook/usePaddle";
+import { useRouter } from "@/i18n/navigation";
 
-export function Pricing() {
+type Props = {
+  userId?: string;
+  userEmail?: string;
+};
+
+const PADDLE_PRICE_IDS = {
+  monthly: "pri_01kdamf396e6w5v9p5swwk8x6j",
+  yearly: "pri_01kdd4mew19ee7zq19zp4g1a57", // Early bird yearly
+};
+
+export function Pricing({ userId, userEmail }: Props) {
+  const { paddle, loading } = usePaddle();
+  const router = useRouter();
+
+  function handleCheckout(priceId: string) {
+    if (!paddle) return;
+
+    if (!userId || !userEmail) {
+      // 1. Get the current path (e.g., /en)
+      const currentPath = window.location.pathname;
+      router.push(`/auth?callbackURL=${currentPath}`);
+      return;
+    }
+
+    paddle.Checkout.open({
+      items: [{ priceId, quantity: 1 }],
+      customer: { email: userEmail },
+      customData: {
+        userId: userId,
+      },
+      settings: {
+        variant: "one-page",
+        displayMode: "overlay",
+        theme: "dark",
+        allowLogout: false, // prevents user from changing email
+        successUrl: `${window.location.origin}/project`,
+      },
+    });
+  }
   return (
     <section id="pricing" className="py-24 dark:bg-background overflow-hidden">
       <div className="container px-4 mx-auto text-center relative">
@@ -63,7 +104,7 @@ export function Pricing() {
 
           {/* 2. Yearly Plan - THE BEST VALUE */}
           <div className="relative p-10 rounded-[2.5rem] bg-card dark:bg-background/50 backdrop-blur-sm border  dark:border-primary/50 flex flex-col text-left  z-20">
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 p-[1px] rounded-full dark:bg-[linear-gradient(to_right,#dd7ddf,#e1cd86,#bbcb92,#71c2ef,#3bffff,#dd7ddf)] shadow-lg">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 p-px rounded-full dark:bg-secondary shadow-lg">
               <div className="dark:bg-background bg-secondary border dark:border-none text-secondary-foreground dark:text-white px-6 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">
                 Most Popular • Save 66%
               </div>
@@ -100,19 +141,14 @@ export function Pricing() {
                 <div className="rounded-full bg-primary/10 p-1">
                   <Check className="text-primary h-3 w-3" />
                 </div>{" "}
-                Lifetime price lock
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <Check className="text-primary h-3 w-3" />
-                </div>{" "}
-                All Future Updates
+                Pay once per year — best value
               </li>
             </ul>
 
             <Button
               variant={"outline"}
-              className="w-full rounded-2xl bg-accent dark:bg-primary dark:text-primary-foreground dark:hover:bg-primary/80 dark:hover:text-primary-foreground  py-6"
+              className="w-full rounded-2xl bg-accent dark:bg-secondary dark:text-primary-foreground dark:hover:bg-primary/80 dark:hover:text-primary-foreground  py-6"
+              onClick={() => handleCheckout(PADDLE_PRICE_IDS.yearly)}
             >
               Unlock Pro Access
             </Button>
@@ -164,16 +200,11 @@ export function Pricing() {
                 </div>{" "}
                 Project Comparison Charts
               </li>
-              <li className="flex items-center gap-3">
-                <div className="rounded-full bg-primary/10 p-1">
-                  <Check className="text-primary h-3 w-3" />
-                </div>{" "}
-                Priority Support
-              </li>
             </ul>
             <Button
               variant="outline"
               className="w-full rounded-2xl py-6  hover:bg-secondary transition-colors"
+              onClick={() => handleCheckout(PADDLE_PRICE_IDS.monthly)}
             >
               Subscribe Monthly
             </Button>

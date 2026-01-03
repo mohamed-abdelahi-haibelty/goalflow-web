@@ -26,7 +26,7 @@ export default async function Login() {
       </div>
 
       <div className="relative flex items-center justify-center min-h-screen px-4">
-        <div className="w-full max-w-md">
+        <div className="w-full  md:max-w-md">
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-1">

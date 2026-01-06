@@ -17,6 +17,12 @@
       "google": "Continue with Google",
       "github": "Continue with GitHub"
     },
+    "terms": {
+      "title": "Accept Terms & Privacy Policy",
+      "description": "I agree to Goalflow's {terms} and {privacy}, including the non-refundable subscription policy.",
+      "notAccepted": "Please accept the Terms & Privacy Policy to continue",
+      "footer": "By signing in, you agree to our terms and privacy policy"
+    },
     "toast": {
       "successGoogle": "Signed in with Google, you will be redirected...",
       "successGithub": "Signed in with GitHub, you will be redirected...",

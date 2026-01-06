@@ -1,3 +1,5 @@
+import { Link } from "@/i18n/navigation";
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background py-12">
@@ -20,12 +22,15 @@ export function Footer() {
             <a href="#pricing" className="hover:text-red-400 transition-colors">
               Pricing
             </a>
-            <a href="#" className="hover:text-red-400 transition-colors">
+            <Link
+              href="/privacy"
+              className="hover:text-red-400 transition-colors"
+            >
               Privacy
-            </a>
-            <a href="#" className="hover:text-red-400 transition-colors">
+            </Link>
+            <Link href="terms" className="hover:text-red-400 transition-colors">
               Terms
-            </a>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-muted-foreground">

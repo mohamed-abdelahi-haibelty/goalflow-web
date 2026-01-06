@@ -93,8 +93,8 @@ export default function PrivacyPolicy() {
               <p>
                 You may access, correct, or delete your personal data. Submit
                 requests to{" "}
-                <a href="mailto:goalflow2004@gmail.com">
-                  goalflow2004@gmail.com
+                <a href="mailto:support@goalflow.cloud">
+                  support@goalflow.cloud
                 </a>
                 . We respond within 30 days.
               </p>
@@ -121,8 +121,8 @@ export default function PrivacyPolicy() {
               <h3>10. Contact</h3>
               <p>
                 For privacy inquiries:{" "}
-                <a href="mailto:goalflow2004@gmail.com">
-                  goalflow2004@gmail.com
+                <a href="mailto:support@goalflow.cloud">
+                  support@goalflow.cloud
                 </a>
               </p>
             </section>

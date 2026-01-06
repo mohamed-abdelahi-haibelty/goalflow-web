@@ -147,8 +147,8 @@ export default function TermsOfUse() {
               <h3>10. Contact</h3>
               <p>
                 For Terms questions:{" "}
-                <a href="mailto:goalflow2004@gmail.com">
-                  goalflow2004@gmail.com
+                <a href="mailto:support@goalflow.cloud">
+                  support@goalflow.cloud
                 </a>
               </p>
             </section>

@@ -52,7 +52,8 @@ function TaskForm({
   const onTextAreaKeydDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
       if(e.key === 'Enter' && !e.shiftKey){
           e.preventDefault()
-          form.handleSubmit(onSubmit)
+          //form.handleSubmit(onSubmit)
+          formRef.current?.requestSubmit();
       }
   }
 

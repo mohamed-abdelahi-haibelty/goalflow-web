@@ -7,6 +7,8 @@ import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getDirection } from "@/lib/utils";
+import { PostHogProvider } from "../providers/PostHogProvider";
+import PostHogPageView from "../providers/PostHogPageView";
 
 const mabry = localFont({
   src: [
@@ -63,15 +65,18 @@ export default async function RootLayout({
         className={`${mabry.variable} antialiased`}
       >
         <NextIntlClientProvider>
-          <Toaster position="bottom-right" />
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem={false}
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
+          <PostHogProvider>
+            <Toaster position="bottom-right" />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem={false}
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+            <PostHogPageView />
+          </PostHogProvider>
         </NextIntlClientProvider>
       </body>
     </html>

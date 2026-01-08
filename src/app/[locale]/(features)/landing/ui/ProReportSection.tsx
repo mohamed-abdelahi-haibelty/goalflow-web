@@ -2,7 +2,10 @@ import ReportFeatureGrid from "./ReportFeatureGrid";
 
 export function ProReportsSection() {
   return (
-    <section className="py-24 bg-card border-y border-border relative overflow-hidden">
+    <section
+      id="report"
+      className="py-24 bg-card border-y border-border relative overflow-hidden"
+    >
       {/* Decorative gradient for the Pro section */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] rounded-full -z-10" />
 
@@ -15,8 +18,8 @@ export function ProReportsSection() {
             You can't improve what you don't measure.
           </h3>
           <p className="text-lg text-muted-foreground">
-            Go beyond just ticking boxes. Pro gives you a data-driven blueprint
-            of your productivity.
+            Go beyond just ticking boxes. Report gives you a data-driven
+            blueprint of your productivity.
           </p>
         </div>
 

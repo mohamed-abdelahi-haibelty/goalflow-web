@@ -18,7 +18,7 @@ import GlobeLanguageSwitcher from "./GlobeLanguageSwitcher";
 const navLinks = [
   { name: "Features", href: "#features" },
   { name: "How it Works", href: "#how-it-works" },
-  { name: "Pricing", href: "#pricing", isPro: true },
+  { name: "Report", href: "#report", isPro: true },
 ];
 
 export function Navbar() {

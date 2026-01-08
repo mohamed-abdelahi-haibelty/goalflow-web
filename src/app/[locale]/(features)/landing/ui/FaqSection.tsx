@@ -4,33 +4,32 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 
 const faqs = [
   {
-    question: "Is Goalflow really free to use?",
+    question: "Is Goalflow free?",
     answer:
-      "Yes! Our Free Plan includes unlimited tasks and lists, the Pomodoro timer, and streak tracking for up to 2 projects. It is perfect for students or individuals starting their productivity journey.",
+      "Yes! Goalflow is currently in early access and is free to use. You can create as many tasks and projects as you want without paying anything.",
   },
   {
-    question: "What exactly do I get with the Pro Plan?",
+    question: "What is the Pomodoro timer and how does it work?",
     answer:
-      "Pro is designed for power users who want deep insights. You get unlimited projects, the yearly activity heatmap, project performance tables, and comparison charts to help you master your time.",
+      "The Pomodoro Technique is a simple way to stay focused. You work for a set time (usually 25 or 50 minutes) and then take a short break. In Goalflow, this timer is built right into your tasks. When you start the timer, the app automatically records exactly how much time you spent working on that specific goal.",
   },
   {
-    question: "What happens if I cancel my Pro subscription?",
+    question: "Why should I use Goalflow instead of a normal to-do list?",
     answer:
-      "Your data is safe! If you downgrade to the Free Plan, any projects beyond the 2-project limit will be locked. You can still view them, but you won't be able to edit or add tasks until you reactivate Pro or delete existing projects.",
+      "A normal to-do list only tells you *what* to do. Goalflow helps you actually *do* it. Instead of switching between a calendar, a timer, and a list, we put everything in one place. It saves you energy and helps you focus on your work.",
   },
   {
-    question: "How does the Pomodoro timer link to my tasks?",
+    question: "Can I see my progress?",
     answer:
-      "Every task you create has a built-in timer session indicator. When you start a focus session, it is automatically logged to that specific task, project, and day. This creates your productivity reports automatically.",
+      "Yes. Goalflow shows you a 'streak' for every day you finish a task. It also gives you simple reports that show you how many hours you worked each day. It's a great way to stay motivated!",
   },
   {
-    question: "Can I use Goalflow for team collaboration?",
+    question: "Do I need to be a professional to use it?",
     answer:
-      "Currently, Goalflow is optimized for individual productivity, freelancers, and students. We focus on the bridge between your personal planning and your deep-focus execution.",
+      "Not at all. Goalflow is built to be very simple. It’s perfect for students learning a new language, freelancers, or anyone who wants to manage their time better without using a complicated app.",
   },
 ];
 
@@ -40,10 +39,10 @@ export function FAQSection() {
       <div className="container px-4 mx-auto max-w-3xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold tracking-tight mb-4">
-            Frequently Asked Questions
+            Common Questions
           </h2>
           <p className="text-muted-foreground">
-            Everything you need to know about Goalflow and our Pro features.
+            Everything you need to know about Goalflow.
           </p>
         </div>
 
@@ -54,7 +53,7 @@ export function FAQSection() {
               value={`item-${index}`}
               className="border-border"
             >
-              <AccordionTrigger className="text-left font-medium  dark:hover:text-primary transition-colors">
+              <AccordionTrigger className="text-left font-medium hover:text-primary transition-colors">
                 {faq.question}
               </AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed">

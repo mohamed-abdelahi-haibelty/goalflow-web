@@ -140,7 +140,7 @@ model Verification {
 
 model Project {
   id            String       @id @default(cuid())
-  name          String
+  name          String @unique
   owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   ownerId       String
   columns       Column[]

@@ -36,7 +36,7 @@ export function NavProjects({
   userEmail: string;
 }) {
   const t = useTranslations("nav.projects");
-  const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
+  //const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -183,12 +183,12 @@ export function NavProjects({
         userEmail={userEmail}
       />
 
-      <UpgradeModal
+      {/* <UpgradeModal
         isOpen={isUpgradeOpen}
         onClose={() => setIsUpgradeOpen(false)}
         userId={userId}
         userEmail={userEmail}
-      />
+      /> */}
     </>
   );
 }

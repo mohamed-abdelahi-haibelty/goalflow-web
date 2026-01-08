@@ -4,11 +4,11 @@ import FeatureLoop from "./(features)/landing/ui/FeatureLoop";
 import { Footer } from "./(features)/landing/ui/Footer";
 import { HeroSection } from "./(features)/landing/ui/Hero";
 import { Navbar } from "./(features)/landing/ui/Navbar";
-import { Pricing } from "./(features)/landing/ui/Pricing";
+//import { Pricing } from "./(features)/landing/ui/Pricing";
 import { ProReportsSection } from "./(features)/landing/ui/ProReportSection";
 
 async function page() {
-  const session = await getUserSession();
+  //const session = await getUserSession();
 
   return (
     <div dir="ltr">
@@ -16,7 +16,7 @@ async function page() {
       <HeroSection />
       <FeatureLoop />
       <ProReportsSection />
-      <Pricing userId={session?.user.id} userEmail={session?.user.email} />
+      {/* <Pricing userId={session?.user.id} userEmail={session?.user.email} /> */}
       <FAQSection />
       <Footer />
     </div>

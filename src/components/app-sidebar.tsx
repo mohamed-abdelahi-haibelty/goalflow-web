@@ -17,7 +17,8 @@ export async function AppSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const projects = await getProjects();
   const { data } = await getUser();
-  const isPro = hasProAccess(data);
+  // const isPro = hasProAccess(data);
+  const isPro = true;
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarContent>
@@ -30,13 +31,13 @@ export async function AppSidebar({
         <NavReport />
       </SidebarContent>
       <SidebarFooter>
-        <NavUpgrade
+        {/* <NavUpgrade
           user={{
             id: data?.id ?? "",
             email: data?.email ?? "",
             isPro: isPro,
           }}
-        />
+        /> */}
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

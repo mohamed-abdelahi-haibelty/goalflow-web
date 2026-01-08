@@ -19,14 +19,14 @@ export default async function ReportPage() {
   const userId = session?.user?.id || "";
   const userEmail = session?.user?.email || "";
 
-  let isPro = false;
-  if (session?.user?.id) {
-    const user = await db.user.findUnique({
-      where: { id: session.user.id },
-      select: { plan: true },
-    });
-    isPro = hasProAccess(user);
-  }
+  let isPro = true;
+  // if (session?.user?.id) {
+  //   const user = await db.user.findUnique({
+  //     where: { id: session.user.id },
+  //     select: { plan: true },
+  //   });
+  //   isPro = hasProAccess(user);
+  // }
 
   return (
     <div className="">

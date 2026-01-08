@@ -107,13 +107,13 @@ export function ReportTable({ isPro, userId, userEmail }: ReportTableProps) {
 
   return (
     <div className="relative">
-      <UpgradeModal
+      {/* <UpgradeModal
         isOpen={isUpgradeModalOpen}
         onClose={() => setIsUpgradeModalOpen(false)}
         userId={userId}
         userEmail={userEmail}
-      />
-      {!isPro && (
+      /> */}
+      {/* {!isPro && (
         <div className="mb-8 p-2 px-4 rounded-xl bg-card/40 border dark:border-2 border-dashed dark:border-primary/20 dark:bg-primary/2 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-start gap-4">
             <div className="space-y-1 flex-1">
@@ -138,7 +138,7 @@ export function ReportTable({ isPro, userId, userEmail }: ReportTableProps) {
             <ArrowRight className="size-4" />
           </Button>
         </div>
-      )}
+      )} */}
 
       {/* MAIN CONTENT 
         We add 'pointer-events-none select-none' if not Pro to prevent interaction 

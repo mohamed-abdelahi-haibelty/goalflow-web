@@ -45,7 +45,7 @@ function CreateProjectModal({
   userId,
 }: CreateProjectModalProps) {
   const t = useTranslations("project.create");
-  const [showUpgrade, setShowUpgrade] = useState(false);
+  //const [showUpgrade, setShowUpgrade] = useState(false);
   const [isPending, startTransition] = useTransition();
   const form = useForm<CreateProjectInput>({
     resolver: zodResolver(createProjectSchema),
@@ -57,10 +57,10 @@ function CreateProjectModal({
 
   const onSubmit = (values: CreateProjectInput) => {
     // LOGIC: If free and has 2 or more projects, stop and show upgrade
-    if (!isPro && currentProjectCount >= 2) {
-      setShowUpgrade(true);
-      return;
-    }
+    // if (!isPro && currentProjectCount >= 2) {
+    //   setShowUpgrade(true);
+    //   return;
+    // }
     startTransition(async () => {
       const res = await createProject(values);
 
@@ -95,19 +95,19 @@ function CreateProjectModal({
   };
 
   // If upgrade triggered, show that modal instead or on top
-  if (showUpgrade) {
-    return (
-      <UpgradeModal
-        isOpen={true}
-        onClose={() => {
-          setShowUpgrade(false);
-          onClose(); // Close the create modal too
-        }}
-        userId={userId}
-        userEmail={userEmail}
-      />
-    );
-  }
+  // if (showUpgrade) {
+  //   return (
+  //     <UpgradeModal
+  //       isOpen={true}
+  //       onClose={() => {
+  //         setShowUpgrade(false);
+  //         onClose(); // Close the create modal too
+  //       }}
+  //       userId={userId}
+  //       userEmail={userEmail}
+  //     />
+  //   );
+  // }
 
   if (!isOpen) return null;
 

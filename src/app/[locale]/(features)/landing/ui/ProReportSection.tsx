@@ -52,7 +52,7 @@ export function ProReportsSection() {
           />
           {/* Dark Mode Report */}
           <img
-            src="/images/full-report.png"
+            src="/images/report.png"
             alt="Pro Analytics Dashboard"
             className="w-full h-auto p-4 hidden dark:block"
           />

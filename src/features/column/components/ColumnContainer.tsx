@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ColumnWithTasks } from "@/features/column/types/types";
 import ColumnForm from "@/features/column/components/ColumnForm";
 import ColumnItem from "@/features/column/components/ColumnItem";
@@ -24,9 +24,11 @@ function reorder<T>(list: T[], startIndex: number, endIndex: number) {
 function ColumnContainer({ projectId, data }: Props) {
   const [orderedData, setOrderedData] = useState(data);
 
-  useEffect(() => {
+  const [previousData, setPreviousData] = useState(data);
+  if (data !== previousData) {
+    setPreviousData(data);
     setOrderedData(data);
-  }, [data]);
+  }
 
   async function onDragEnd(result: DropResult) {
     const { destination, source, type } = result;

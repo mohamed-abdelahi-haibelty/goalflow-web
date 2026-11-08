@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Calendar, CalendarDays, Clock } from "lucide-react";
@@ -13,19 +13,17 @@ import { cn } from "@/lib/utils";
 import { ActivityHeatmap } from "@/features/report/components/ActivityHeatmap";
 import { ProjectComparisonChart } from "@/features/report/components/ProjectComparisonChart";
 import {
-  type ChartData,
-  type HeatmapData,
+  type ReportDataPayload,
   getReports,
 } from "@/features/report/actions/getReport";
 import { useSearchParams } from "next/navigation";
 
 export function ReportTable() {
   const t = useTranslations("report");
-  const [data, setData] = useState<ProjectReport[]>([]);
-  const [heatmapData, setHeatmapData] = useState<HeatmapData[]>([]);
-  const [chartData, setChartData] = useState<ChartData[]>([]);
-
-  const [loading, setLoading] = useState(true);
+  const [result, setResult] = useState<{
+    key: string;
+    data: ReportDataPayload | null;
+  }>({ key: "", data: null });
   const [dateFilter, setDateFilter] = useState<DateFilter | undefined>();
   const columns = useReportColumns();
 
@@ -36,38 +34,36 @@ export function ReportTable() {
     ? parseInt(yearParam)
     : new Date().getFullYear();
 
-  const fetchReports = useCallback(
-    async (filter?: DateFilter) => {
-      try {
-        setLoading(true);
-        const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-        const response = await getReports({
-          dateFilter: filter,
-          timezone,
-          year: selectedYear, // 3. Pass the year to the server action
-        });
-
-        if (response.success && response.data) {
-          setData(response.data.tableData);
-          setHeatmapData(response.data.heatmapData);
-          setChartData(response.data.chartData);
-        } else {
-          toast.error(response.message);
-          setData([]);
-        }
-      } catch {
-        toast.error(t("error.fetchFailed"));
-      } finally {
-        setLoading(false);
-      }
-    },
-    [selectedYear, t],
-  );
+  const queryKey = `${selectedYear}/${dateFilter ?? "all"}`;
+  const loading = result.key !== queryKey;
+  const data = result.data?.tableData ?? [];
+  const heatmapData = result.data?.heatmapData ?? [];
+  const chartData = result.data?.chartData ?? [];
 
   useEffect(() => {
-    fetchReports(dateFilter);
-  }, [dateFilter, fetchReports]);
+    let active = true;
+    getReports({
+      dateFilter,
+      year: selectedYear,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    })
+      .then((response) => {
+        if (!active) return;
+        setResult({
+          key: queryKey,
+          data: response.success ? (response.data ?? null) : null,
+        });
+        if (!response.success) toast.error(response.message);
+      })
+      .catch(() => {
+        if (!active) return;
+        setResult({ key: queryKey, data: null });
+        toast.error(t("error.fetchFailed"));
+      });
+    return () => {
+      active = false;
+    };
+  }, [dateFilter, selectedYear, queryKey, t]);
 
   const handleFilterChange = (filter: DateFilter | undefined) => {
     setDateFilter(filter);

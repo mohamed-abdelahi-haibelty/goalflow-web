@@ -33,7 +33,7 @@ export async function getUser() {
       code: 200,
       data: user,
     };
-  } catch (err) {
+  } catch {
     return {
       success: false,
       message: "Something went wrong!",

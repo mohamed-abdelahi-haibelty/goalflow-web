@@ -36,7 +36,7 @@ export default function PrivacyPolicy() {
               <h4>2.1 Account Data</h4>
               <ul>
                 <li>From Google/GitHub: Name, email, profile picture</li>
-                <li>Account creation date, subscription status</li>
+                <li>Account creation date</li>
               </ul>
               <h4>2.2 Productivity Data</h4>
               <ul>
@@ -44,12 +44,6 @@ export default function PrivacyPolicy() {
                 <li>Timer sessions (start/end times, durations)</li>
                 <li>Settings (timer lengths, theme, language)</li>
               </ul>
-              <h4>2.3 Payment Data</h4>
-              <p>
-                PWe do not store your credit card details. Payment information
-                is handled securely by Paddle. We only store your subscription
-                status and transaction history
-              </p>
             </section>
 
             <section>
@@ -74,8 +68,8 @@ export default function PrivacyPolicy() {
               <h3>5. Data Sharing & Third Parties</h3>
               <p>
                 <strong>We do not sell your personal data.</strong> We share
-                with Paddle (payments), infrastructure providers (hosting), and
-                legal authorities when required.
+                with infrastructure providers (hosting) and legal authorities
+                when required.
               </p>
             </section>
 

@@ -1,5 +1,5 @@
 import { getDirection } from "@/lib/utils";
-import { ProjectHeader } from "../ui/ProjectHeader";
+import { ProjectHeader } from "@/features/project/components/ProjectHeader";
 
 export default async function ProjectIdLayout({
   children,

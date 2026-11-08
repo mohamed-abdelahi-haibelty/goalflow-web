@@ -1,8 +1,8 @@
 import { getUserSession } from "@/actions/auth/getUserSession";
 import { notFound, redirect } from "next/navigation";
-import { getProjectById } from "../action/getProjectById";
-import ColumnContainer from "../../column/ui/ColumnContainer";
-import { getColumns } from "../../column/action/getColumns";
+import { getProjectById } from "@/features/project/actions/getProjectById";
+import ColumnContainer from "@/features/column/components/ColumnContainer";
+import { getColumns } from "@/features/column/actions/getColumns";
 import { setRequestLocale } from "next-intl/server";
 
 interface PageProps {

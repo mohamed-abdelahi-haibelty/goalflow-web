@@ -11,7 +11,7 @@ function PostHogPageViewContent() {
 
   useEffect(() => {
     // Track pageview whenever the route changes
-    if (pathname && posthog) {
+    if (pathname && posthog && process.env.NEXT_PUBLIC_POSTHOG_KEY) {
       let url = window.origin + pathname;
       if (searchParams.toString()) {
         url = url + `?${searchParams.toString()}`;

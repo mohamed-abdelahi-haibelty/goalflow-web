@@ -39,7 +39,7 @@ export default function LoginForm() {
           toast.success(
             provider === "google"
               ? t("toast.successGoogle")
-              : t("toast.successGithub")
+              : t("toast.successGithub"),
           );
           setLoading(false);
         },

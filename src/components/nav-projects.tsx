@@ -1,6 +1,6 @@
 "use client";
 
-import { Folder, MoreHorizontal, Plus, Sparkles } from "lucide-react";
+import { Folder, MoreHorizontal, Plus } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,92 +12,30 @@ import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Project } from "@/generated/prisma/client";
 import { Link, usePathname } from "@/i18n/navigation";
-import { useEffect, useRef, useState } from "react";
-import CreateProjectModal from "@/app/[locale]/(features)/project/ui/CreateProjectModal";
+import { useState } from "react";
+import CreateProjectModal from "@/features/project/components/CreateProjectModal";
 import { useTranslations } from "next-intl";
-import { UpgradeModal } from "@/app/[locale]/(features)/billing/ui/UpgradeModal";
 
-export function NavProjects({
-  projects,
-  isPro,
-  userId,
-  userEmail,
-}: {
-  projects: Project[];
-  isPro: boolean;
-  userId: string;
-  userEmail: string;
-}) {
+export function NavProjects({ projects }: { projects: Project[] }) {
   const t = useTranslations("nav.projects");
-  //const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
   const { isMobile } = useSidebar();
   const pathname = usePathname();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-
-  // Local state to manage the visual order of projects
-  const [sortedProjects, setSortedProjects] = useState(projects);
-
-  // Track the last promoted project ID
-  const promotedIdRef = useRef<string | null>(null);
-
-  // Extract current Project ID from URL
-  const match = pathname.match(/\/project\/([^\/]+)/);
-  const activeId = match ? match[1] : null;
-
-  // FIXED: Sync with server data while preserving promoted order
-  useEffect(() => {
-    setSortedProjects((prev) => {
-      // If we have a promoted project, preserve its position
-      if (promotedIdRef.current && activeId === promotedIdRef.current) {
-        // Find the promoted project in the new server data
-        const promotedProject = projects.find(
-          (p) => p.id === promotedIdRef.current
-        );
-
-        if (promotedProject) {
-          // Keep it at the top, update the rest
-          const otherProjects = projects.filter(
-            (p) => p.id !== promotedIdRef.current
-          );
-          return [promotedProject, ...otherProjects];
-        }
-      }
-
-      // Otherwise, just update with server data
-      return projects;
-    });
-  }, [projects, activeId]);
-
-  // SMART LIST LOGIC:
-  // Whenever the activeId changes (user clicks a project), check if it needs promotion.
-  useEffect(() => {
-    if (!activeId) return;
-
-    setSortedProjects((prev) => {
-      const index = prev.findIndex((p) => p.id === activeId);
-
-      // If project exists and is hidden (index >= 3), move it to the top
-      if (index >= 3) {
-        const projectToPromote = prev[index];
-        promotedIdRef.current = activeId; // Track this promotion
-        const newOrder = [
-          projectToPromote,
-          ...prev.filter((p) => p.id !== activeId),
-        ];
-        return newOrder;
-      }
-
-      // If it's already visible (index 0, 1, or 2), keep order as is
-      return prev;
-    });
-  }, [activeId]);
+  const activeId = pathname.match(/\/project\/([^/]+)/)?.[1] ?? null;
+  const activeIndex = projects.findIndex((project) => project.id === activeId);
+  const sortedProjects =
+    activeIndex >= 3
+      ? [
+          projects[activeIndex],
+          ...projects.filter((project) => project.id !== activeId),
+        ]
+      : projects;
 
   // Split: Visible (Top 3) vs Hidden (Rest)
   const visibleProjects = sortedProjects.slice(0, 3);
@@ -177,18 +115,7 @@ export function NavProjects({
       <CreateProjectModal
         isOpen={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        currentProjectCount={projects.length}
-        isPro={isPro}
-        userId={userId}
-        userEmail={userEmail}
       />
-
-      {/* <UpgradeModal
-        isOpen={isUpgradeOpen}
-        onClose={() => setIsUpgradeOpen(false)}
-        userId={userId}
-        userEmail={userEmail}
-      /> */}
     </>
   );
 }

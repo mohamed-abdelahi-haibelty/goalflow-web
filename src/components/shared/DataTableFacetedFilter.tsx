@@ -105,7 +105,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                       }
                       const filterValues = Array.from(selectedValues);
                       column?.setFilterValue(
-                        filterValues.length ? filterValues : undefined
+                        filterValues.length ? filterValues : undefined,
                       );
                     }}
                   >
@@ -114,7 +114,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                         "flex size-4 items-center justify-center rounded-lg border",
                         isSelected
                           ? "bg-primary border-primary text-primary-foreground"
-                          : "border-input [&_svg]:invisible"
+                          : "border-input [&_svg]:invisible",
                       )}
                     >
                       <Check className="text-primary-foreground size-3.5" />

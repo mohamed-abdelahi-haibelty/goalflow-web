@@ -100,7 +100,6 @@ model Project {
 
   isLocked Boolean @default(false) @ignore
 
-  @@unique([ownerId, name])
   @@index([ownerId])
   @@index([ownerId, createdAt])
   @@map("projects")

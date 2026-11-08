@@ -8,14 +8,18 @@ A task belongs to a column, which belongs to a project, which belongs to a user.
 
 Timer operations resolve the owned task first and derive its project from the database. Remaining time is calculated from server timestamps, not trusted client input. Completion claims the timer using its prior update timestamp inside a transaction before writing session history, preventing duplicate completion requests from creating duplicate reports. Break selection uses the user's configured round count.
 
-Projects have names unique per owner. Deleting a task preserves its historical focus sessions by setting the optional task relation to null.
+Project display names may repeat; stable project IDs identify records. Deleting a task preserves its historical focus sessions by setting the optional task relation to null.
 
 ## Free application and legacy databases
 
-Billing endpoints, SDKs, upgrade dialogs, and paywalls have been removed. Historical migrations are immutable. Legacy billing tables and columns remain in the Prisma schema with `@ignore` / `@@ignore` so existing data is preserved and future migrations do not accidentally drop it. The application has no generated client API for those records. The new migration only scopes project-name uniqueness per owner and preserves history when tasks are deleted.
+Billing endpoints, SDKs, upgrade dialogs, and paywalls have been removed. Historical migrations are immutable. Legacy billing tables and columns remain in the Prisma schema with `@ignore` / `@@ignore` so existing data is preserved and future migrations do not accidentally drop it. The application has no generated client API for those records. The new migration only removes the retired global project-name uniqueness requirement and preserves history when tasks are deleted.
 
 Apply migrations to a development database before deploying. No production migration is run by the build command.
 
 ## Verification scope
 
 The regression suite checks cross-project task boundaries, invalid reorder destinations, configurable timer rules, and settings validation. OAuth, Neon connectivity, and real browser interactions require a configured development environment. Bundled fonts and media retain their existing provenance; confirm redistribution rights before publishing source.
+
+## Existing production migration history
+
+The production database had rolled back `20260108212051_unique_project_name` and already contained duplicate display names. Its global uniqueness requirement is retired. For that existing database only, the migration is marked applied with `prisma migrate resolve --applied 20260108212051_unique_project_name` before applying the free-app migration, which explicitly removes the retired index. Existing names and records are not rewritten. New databases apply the historical migrations in order and then remove the index normally.

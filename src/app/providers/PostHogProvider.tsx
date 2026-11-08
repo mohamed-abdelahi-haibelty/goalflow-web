@@ -7,7 +7,10 @@ import { PostHogProvider as PHProvider } from "posthog-js/react";
 
 export function PostHogProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") {
+    if (
+      process.env.NODE_ENV === "production" &&
+      process.env.NEXT_PUBLIC_POSTHOG_KEY
+    ) {
       posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY as string, {
         api_host:
           process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://eu.i.posthog.com",

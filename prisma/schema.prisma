@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -9,85 +8,36 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean @default(false)
   image         String?
-  role          Role        @default(USER) 
+  role          Role    @default(USER)
 
-  // Subscription Summary (For fast frontend checks)
-  plan             Plan          @default(FREE)
-    // Paddle Customer ID (Stored to prevent creating duplicate customers in Paddle)
-  paddleCustomerId String?       @unique
-
-   // Link to detailed subscription data
-  subscription     Subscription?
-
-
-  transactions Transaction[]
+  // Legacy storage retained for existing deployments; not exposed by Prisma Client.
+  plan             Plan          @default(FREE) @ignore
+  paddleCustomerId String?       @unique @ignore
+  subscription     Subscription? @ignore
+  transactions     Transaction[] @ignore
 
   //Streak fields 
-  streakCount           Int            @default(0)
-  longestStreak         Int            @default(0)
+  streakCount           Int          @default(0)
+  longestStreak         Int          @default(0)
   lastStreakUpgradeDate DateTime?
-  streakStatus          StreakStatus   @default(UNINITIATED)
+  streakStatus          StreakStatus @default(UNINITIATED)
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sessions  Session[]
+  accounts  Account[]
 
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-
-  projects          Project[]
-  pomodoroSessions  PomodoroSession[]
-  settings          TimerSettings?
+  projects         Project[]
+  pomodoroSessions PomodoroSession[]
+  settings         TimerSettings?
 
   @@unique([email])
   @@map("user")
-}
-
-model Subscription {
-  id                   String             @id @default(cuid())
-  userId               String             @unique
-  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Paddle Identifiers
-  paddleSubscriptionId String             @unique // The 'sub_xxx' ID from Paddle
-  paddlePriceId        String             // The 'pri_xxx' ID. This tracks if they are 'Early Bird' or 'Standard'
-  paddleProductId      String             //  The 'pro_xxx' ID
-
-
-  // Status & Billing
-  status               SubscriptionStatus 
-  currentPeriodStart   DateTime
-  currentPeriodEnd     DateTime           // Crucial for "Pro until X date" logic
-  cancelAtPeriodEnd    Boolean            @default(false) // If true, UI shows "Cancels on [Date]"
-
-  createdAt            DateTime           @default(now())
-  updatedAt            DateTime           @updatedAt
-
-  @@map("subscriptions")
-}
-
-model Transaction {
-  id               String   @id @default(cuid())
-  userId           String
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  paddleTransactionId String @unique // 'trn_xxx' from Paddle
-  paddleSubscriptionId String?        // Link to the sub it belongs to
-  paddleProductId      String             // Helps with financial reporting
-  
-  amount           Int      // Store in cents/smallest unit (e.g., 199 for $1.99)
-  currency         String   // e.g., "USD", "EUR"
-  status           TransactionStatus
-  
-  receiptUrl       String?  // Link to the Paddle PDF receipt
-  createdAt        DateTime @default(now())
-
-  @@index([userId])
-  @@map("transactions")
 }
 
 model Session {
@@ -139,17 +89,16 @@ model Verification {
 }
 
 model Project {
-  id            String       @id @default(cuid())
-  name          String @unique
-  owner         User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId       String
-  columns       Column[]
-  pomodoroSessions  PomodoroSession[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
-  // Locking Logic for Downgrades
-  // Logic: If User.plan == FREE and Project count > 2, this is set to true for the newest projects.
-  isLocked      Boolean      @default(false)
+  id               String            @id @default(cuid())
+  name             String
+  owner            User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId          String
+  columns          Column[]
+  pomodoroSessions PomodoroSession[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  isLocked Boolean @default(false) @ignore
 
   @@index([ownerId])
   @@index([ownerId, createdAt])
@@ -157,14 +106,14 @@ model Project {
 }
 
 model Column {
-  id          String    @id @default(cuid())
-  name        String
-  order       Int
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String
-  tasks       Task[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  order     Int
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([projectId])
   @@index([projectId, order])
@@ -172,19 +121,19 @@ model Column {
 }
 
 model Task {
-  id          String      @id @default(cuid())
+  id          String  @id @default(cuid())
   title       String
   description String?
-  completed   Boolean     @default(false)
+  completed   Boolean @default(false)
   order       Int
-  column      Column      @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  column      Column  @relation(fields: [columnId], references: [id], onDelete: Cascade)
   columnId    String
 
   pomodoroSessions PomodoroSession[] // The history of completed work
-  activeTimer      ActiveTimer?      // The current state of the timer for this task
+  activeTimer      ActiveTimer? // The current state of the timer for this task
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([columnId])
   @@index([columnId, order])
@@ -192,15 +141,15 @@ model Task {
 }
 
 model TimerSettings {
-  id             String @id @default(uuid())
-  user             User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String   @unique
-  
-  workDuration   Int    @default(1500) // 25 mins
-  shortBreakDur  Int    @default(300)  // 5 mins
-  longBreakDur   Int    @default(900)  // 15 mins
+  id     String @id @default(uuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+
+  workDuration          Int @default(1500) // 25 mins
+  shortBreakDur         Int @default(300) // 5 mins
+  longBreakDur          Int @default(900) // 15 mins
   roundsBeforeLongBreak Int @default(4)
-  soundVolume       Int     @default(50) // 0-100
+  soundVolume           Int @default(50) // 0-100
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -209,38 +158,35 @@ model TimerSettings {
 }
 
 model ActiveTimer {
-  id             String    @id @default(uuid())
-  taskId         String    @unique //One active timer per task
-  task           Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  
-  mode           Mode      @default(POMODORO) // POMODORO, SHORT_BREAK, LONG_BREAK
-  status         TimerStatus   @default(IDLE) // IDLE, RUNNING, PAUSED
-  startTime      DateTime? // When the current run started
-  pausedWhen     Int?    // Seconds remaining when paused
-  
+  id     String @id @default(uuid())
+  taskId String @unique //One active timer per task
+  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  currentDuration Int      @default(1500) 
-  sessionsCount   Int      @default(0) // Rounds completed for this specific task
+  mode       Mode        @default(POMODORO) // POMODORO, SHORT_BREAK, LONG_BREAK
+  status     TimerStatus @default(IDLE) // IDLE, RUNNING, PAUSED
+  startTime  DateTime? // When the current run started
+  pausedWhen Int? // Seconds remaining when paused
+
+  currentDuration Int @default(1500)
+  sessionsCount   Int @default(0) // Rounds completed for this specific task
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model PomodoroSession {
-  id          String       @id @default(cuid())
-  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
+  id     String @id @default(cuid())
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
 
-  project         Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId       String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
 
-  task        Task?        @relation(fields: [taskId], references: [id])
-  taskId      String?
+  task   Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  taskId String?
 
-  duration    Int      // How long was this session in seconds (e.g., 1500)
+  duration    Int // How long was this session in seconds (e.g., 1500)
   completedAt DateTime @default(now())
-
-  
 
   @@index([userId])
   @@index([projectId])
@@ -253,8 +199,69 @@ enum Role {
   ADMIN
 }
 
-// We only care if they are FREE or PRO. 
-// The frequency (Monthly/Yearly) is derived from the Subscription model.
+enum Mode {
+  POMODORO
+  SHORT_BREAK
+  LONG_BREAK
+}
+
+enum TimerStatus {
+  IDLE
+  RUNNING
+  PAUSED
+}
+
+enum StreakStatus {
+  UNINITIATED
+  STARTED
+}
+
+// Legacy table, preserved without an application client API.
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Paddle Identifiers
+  paddleSubscriptionId String @unique // The 'sub_xxx' ID from Paddle
+  paddlePriceId        String // The 'pri_xxx' ID. This tracks if they are 'Early Bird' or 'Standard'
+  paddleProductId      String //  The 'pro_xxx' ID
+
+  // Status & Billing
+  status             SubscriptionStatus
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime // Crucial for "Pro until X date" logic
+  cancelAtPeriodEnd  Boolean            @default(false) // If true, UI shows "Cancels on [Date]"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("subscriptions")
+  @@ignore
+}
+
+// Legacy table, preserved without an application client API.
+model Transaction {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  paddleTransactionId  String  @unique // 'trn_xxx' from Paddle
+  paddleSubscriptionId String? // Link to the sub it belongs to
+  paddleProductId      String // Helps with financial reporting
+
+  amount   Int // Store in cents/smallest unit (e.g., 199 for $1.99)
+  currency String // e.g., "USD", "EUR"
+  status   TransactionStatus
+
+  receiptUrl String? // Link to the Paddle PDF receipt
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@map("transactions")
+  @@ignore
+}
+
 enum Plan {
   FREE
   PRO
@@ -263,26 +270,9 @@ enum Plan {
 
 enum SubscriptionStatus {
   ACTIVE
-  PAST_DUE  // Paddle tried to charge but failed, usually enters a retry logic
-  CANCELED  // User canceled explicitly
+  PAST_DUE // Paddle tried to charge but failed, usually enters a retry logic
+  CANCELED // User canceled explicitly
   TRIALING
-}
-
-enum Mode {
-  POMODORO
-  SHORT_BREAK
-  LONG_BREAK
-}
-
-enum TimerStatus {
- IDLE
- RUNNING
- PAUSED
-}
-
-enum StreakStatus {
-  UNINITIATED
-  STARTED
 }
 
 enum TransactionStatus {
@@ -291,5 +281,3 @@ enum TransactionStatus {
   FAILED
   REFUNDED
 }
-
-

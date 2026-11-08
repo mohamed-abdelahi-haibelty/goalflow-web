@@ -66,7 +66,7 @@ export function DataTableToolbar<TData>({
                 title={filter.title}
                 options={filter.options}
               />
-            )
+            ),
         )}
 
         {isFiltered && (

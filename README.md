@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GoalFlow
 
-## Getting Started
+A free productivity app that combines Kanban boards, task-level Pomodoro timers, daily streaks, and activity reports. Built with Next.js, React, TypeScript, and PostgreSQL.
 
-First, run the development server:
+![GoalFlow board](public/images/hero-light.png)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
+## Features
+
+- Organize projects into columns and reorder tasks with drag and drop.
+- Focus with configurable work sessions, short breaks, and long breaks.
+- Review focus time, completion counts, activity heatmaps, and project comparisons.
+- Sign in with GitHub or Google through Better Auth.
+- Use English, French, or Arabic, including right-to-left layouts and light/dark themes.
+
+All features are available without subscriptions or payments.
+
+## Local setup
+
+Use Node.js 24 LTS, pnpm 11, and a Neon PostgreSQL database. The runtime uses the Neon WebSocket adapter; a plain local PostgreSQL server needs a compatible proxy or a different Prisma adapter.
+
+```sh
+pnpm install --frozen-lockfile
+cp .env.example .env
+# Fill in the database URL, a random auth secret, and your OAuth credentials.
+pnpm db:generate
+pnpm db:migrate
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. Configure OAuth callbacks for `/api/auth/callback/github` and `/api/auth/callback/google` on the same origin as `BETTER_AUTH_URL`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```text
+src/app/          Routes, layouts, and providers
+src/features/     Domain modules: project, column, task, pomodoro, report, streak
+  <feature>/
+    actions/      Server entry points
+    components/   Feature UI
+    hooks/        Client behavior, where needed
+    types/        Domain types and input schemas
+src/server/       Server-only ownership checks
+src/components/   Shared UI primitives and application navigation
+src/lib/          Database, authentication, and shared utilities
+prisma/           Schema and versioned migrations
+tests/            Ownership and timer regression tests
+```
 
-## Learn More
+## Validation
 
-To learn more about Next.js, take a look at the following resources:
+```sh
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm format:check
+pnpm build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Generate the Prisma client before type checking on a fresh checkout. Unit tests mock external services and do not require production credentials. They do not replace a full browser and database integration test.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`pnpm build` only builds the application. Apply database migrations separately with `pnpm db:migrate` during deployment.
 
-## Deploy on Vercel
+## Architecture and maintenance
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [architecture notes](docs/architecture.md) for ownership boundaries, timer concurrency, and database compatibility. Analytics are optional and disabled when their environment key is absent.

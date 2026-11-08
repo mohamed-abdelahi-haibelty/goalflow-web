@@ -60,6 +60,8 @@ export function DataTable<TData, TValue>({
   deleteCancelLabel = "Cancel",
   noResultsMessage = "No results found.",
 }: DataTableProps<TData, TValue>) {
+  // TanStack Table owns mutable table state; React Compiler must skip this call.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,
@@ -95,7 +97,7 @@ export function DataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -114,7 +116,7 @@ export function DataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

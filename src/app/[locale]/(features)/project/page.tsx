@@ -1,8 +1,8 @@
 import { getUserSession } from "@/actions/auth/getUserSession";
 
 import { redirect } from "@/i18n/navigation";
-import { getProjects } from "./action/getProjects";
-import { createProject } from "./action/createProject";
+import { getProjects } from "@/features/project/actions/getProjects";
+import { createProject } from "@/features/project/actions/createProject";
 
 async function Home({
   params,

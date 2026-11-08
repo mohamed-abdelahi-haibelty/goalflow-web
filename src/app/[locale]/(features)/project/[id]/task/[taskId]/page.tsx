@@ -1,6 +1,6 @@
-import { getTaskTimer } from "@/app/[locale]/(features)/pomodoro/action/timer";
-import PomodoroTimer from "@/app/[locale]/(features)/pomodoro/ui/PomodoroTimer";
-import { getTaskById } from "@/app/[locale]/(features)/task/action/getTaskById";
+import { getTaskTimer } from "@/features/pomodoro/actions/timer";
+import PomodoroTimer from "@/features/pomodoro/components/PomodoroTimer";
+import { getTaskById } from "@/features/task/actions/getTaskById";
 
 type Props = {
   params: Promise<{ id: string; taskId: string }>;

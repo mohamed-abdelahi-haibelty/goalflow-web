@@ -43,7 +43,7 @@ export function formatTimeSpentWithTranslations(
     minutes: string;
     seconds: string;
     noTime: string;
-  }
+  },
 ): string {
   if (seconds === 0) {
     return translations.noTime;

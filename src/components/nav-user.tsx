@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Sparkles } from "lucide-react";
+import { ChevronsUpDown, LogOut, LogIn } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -61,7 +61,11 @@ export function NavUser() {
                 <span className="truncate font-medium">
                   {session?.user.name}
                 </span>
-                <span className="truncate text-xs">{session?.user.email}</span>
+                <span className="truncate text-xs">
+                  {session?.user.isAnonymous
+                    ? t("guestWorkspace")
+                    : session?.user.email}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -88,19 +92,22 @@ export function NavUser() {
                     {session?.user.name}
                   </span>
                   <span className="truncate text-xs">
-                    {session?.user.email}
+                    {session?.user.isAnonymous
+                      ? t("guestWorkspace")
+                      : session?.user.email}
                   </span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                {t("upgrade")}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            {session?.user.isAnonymous && (
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={() => router.push("/auth")}>
+                  <LogIn />
+                  {t("keepWorkspace")}
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            )}
             <DropdownMenuItem onClick={signOut}>
               <LogOut />
               {t("logout")}

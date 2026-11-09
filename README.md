@@ -63,3 +63,9 @@ Generate the Prisma client before type checking on a fresh checkout. Unit tests 
 ## Architecture and maintenance
 
 See [architecture notes](docs/architecture.md) for ownership boundaries, timer concurrency, and database compatibility. Analytics are optional and disabled when their environment key is absent.
+
+### Guest access
+
+On the sign-in page, accept the terms and choose **Try as a guest**. Each visitor gets a separate Better Auth anonymous identity with the same project ownership checks as registered users. Signing in with Google or GitHub transfers that guest’s projects and focus history to the authenticated account. Signing out loses access to an unlinked guest workspace; it does not share it with other visitors.
+
+Deploy the additive `20261109000100_guest_access` migration before deploying this feature. The guest endpoints require the configured `BETTER_AUTH_URL` Origin. Anonymous sign-in is limited to five requests per minute per instance/IP by Better Auth.

@@ -12,6 +12,7 @@ model User {
   name          String
   email         String
   emailVerified Boolean @default(false)
+  isAnonymous   Boolean @default(false)
   image         String?
   role          Role    @default(USER)
 

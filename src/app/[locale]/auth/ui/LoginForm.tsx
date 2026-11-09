@@ -11,10 +11,13 @@ import { Spinner } from "@/components/ui/spinner";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "@/i18n/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackURL = searchParams.get("callbackURL") || "/project";
+  const [guestLoading, setGuestLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [githubLoading, setGithubLoading] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
@@ -50,6 +53,23 @@ export default function LoginForm() {
         },
       },
     });
+  }
+
+  async function signInAsGuest() {
+    if (!agreedToTerms || guestLoading) return;
+    setGuestLoading(true);
+    try {
+      const existing = await authClient.getSession();
+      if (!existing.data) {
+        const result = await authClient.signIn.anonymous();
+        if (result.error) throw new Error(result.error.message);
+      }
+      router.push("/project");
+      router.refresh();
+    } catch {
+      toast.error(t("toast.error"));
+      setGuestLoading(false);
+    }
   }
 
   return (
@@ -102,6 +122,19 @@ export default function LoginForm() {
               </Button>
             </div>
           </div>
+          <Button
+            className="w-full h-12 rounded-xl"
+            onClick={signInAsGuest}
+            disabled={
+              guestLoading || googleLoading || githubLoading || !agreedToTerms
+            }
+          >
+            {guestLoading ? <Spinner /> : null}
+            {guestLoading ? t("loading") : t("guest")}
+          </Button>
+          <p className="text-xs text-center text-muted-foreground">
+            {t("guestHint")}
+          </p>
           <div className="flex items-start space-x-3 p-4  rounded-lg bg-muted/50">
             <Checkbox
               id="terms-agreement"

@@ -27,7 +27,9 @@
       "successGoogle": "Connecté avec Google, redirection en cours...",
       "successGithub": "Connecté avec GitHub, redirection en cours...",
       "error": "Échec de la connexion. Une erreur s'est produite."
-    }
+    },
+    "guest": "Essayer en tant qu’invité",
+    "guestHint": "Votre espace est privé. Connectez-vous pour conserver votre travail ; la déconnexion met fin à l’accès invité."
   },
   "columnHeader": {
     "placeholder": "Renommer la liste...",
@@ -169,7 +171,9 @@
   },
   "navUser": {
     "upgrade": "Passer à l'abonnement Pro",
-    "logout": "Se déconnecter"
+    "logout": "Se déconnecter",
+    "guestWorkspace": "Espace invité",
+    "keepWorkspace": "Se connecter pour conserver votre travail"
   },
   "StreakCounter": {
     "streakActive": "Streak active ! Continuez comme ça !",

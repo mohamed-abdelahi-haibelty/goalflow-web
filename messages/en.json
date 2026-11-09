@@ -27,7 +27,9 @@
       "successGoogle": "Signed in with Google, you will be redirected...",
       "successGithub": "Signed in with GitHub, you will be redirected...",
       "error": "Sign in failed. Something went wrong."
-    }
+    },
+    "guest": "Try as a guest",
+    "guestHint": "Your workspace is private. Sign in later to keep your work; signing out ends guest access."
   },
   "columnHeader": {
     "placeholder": "Rename list...",
@@ -169,7 +171,9 @@
   },
   "navUser": {
     "upgrade": "Go Pro",
-    "logout": "Log out"
+    "logout": "Log out",
+    "guestWorkspace": "Guest workspace",
+    "keepWorkspace": "Sign in to keep your work"
   },
   "StreakCounter": {
     "streakActive": "Streak active! Keep it up!",
